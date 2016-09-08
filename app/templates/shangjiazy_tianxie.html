@@ -1,0 +1,188 @@
+{% extends 'layout.html' %}
+{% block title %}商家主页－填写 {% endblock %}
+{% block content %}
+<div class="cdingdgy">
+	<div class="cdingdgy1">
+		<div class="cshangjbj">
+			<form name="form1" method="post" action="{{ url_for('auth.save') }}">
+				<div class="cshangjbj1">
+					<span>商家基本信息</span><a href="#" onclick="form1.submit()">保存</a>
+				</div>
+				<div class="cshangjbj2">
+					<table width="100%" border="0" cellpadding="0" cellspacing="0">
+						<tr valign="top">
+							<td width="85">商家名称</td>
+							<td><div class="cshangjbj2in"><input type="text" id='company' name='company' placeholder="请输入商家名称" value="{{ user.company }}"></div></td>
+						</tr>
+				<tr valign="top">
+					<td width="85">服务商所在地</td>
+					<td><div class="cshangjbj2in" id="location">
+                            <select class="continent">
+
+                            </select>
+                            <select class="country">
+                                <option>请选择城国家</option>
+                            </select>
+                            <select class="city" style="display:none;">
+                                <option>请选择城市</option>
+                            </select>
+						</div></td>
+				</tr>
+				<tr valign="top">
+					<td width="85">可服务地区</td>
+					<td><div class="cshangjbj2in" id='service'>
+                            <select class="continent">
+
+                            </select>
+                            <select class="country">
+                                <option>请选择城国家</option>
+                            </select>
+                            <select class="city" style="display:none;">
+                                <option>请选择城市</option>
+                            </select>
+						</div></td>
+				</tr>
+				<tr valign="top">
+					<td width="85"></td>
+					<td><div class="cshangjbj2fuwu">
+							{% for country in countrys %}
+							<li>
+								<a href="javascript:void(0)">{{ country.countryname_cn }}<span></span></a><input type="hidden" name="service" id="country_{{ loop.index0 }}" value="{{ country.countryid }}">
+								<input type="hidden" name="service_cn" value="{{ country.countryname_cn }}">
+							</li>
+							{% endfor %}
+						</div></td>
+				</tr>
+				<tr valign="top">
+					<td colspan="2">可服务的出行主题<i></i></td>
+				</tr>
+				<tr valign="top">
+					<td></td>
+					<td>
+							<div class="cshangjbj2li">
+								{% for topic in topics %}
+								<li>
+									<input type="checkbox" name="topic" value="{{ loop.index }}" id="CheckboxGroup1_{{ loop.index }}">
+									<label for="CheckboxGroup1_{{ loop.index }}">{{ topic }}</label>
+								</li>
+								{% endfor %}
+							</div>
+					</td>
+				</tr>
+				<tr valign="top">
+					<td width="85">商家简介</td>
+					<td><textarea onFocus="this.value=''" onBlur="if(!value){value=defaultValue;}" id="introdece" name="introduce">{{ user.introduce }}</textarea></td>
+				</tr>
+				<tr valign="top">
+					<td width="85"></td>
+					<td><button type="submit" class="cshangjbj2but">注册</button></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+    </form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block js %}
+<script type="text/javascript">
+init = true;
+$(document).ready(function(){
+	// 页面载入时获取大洲
+    $.ajax({
+        url:'{{ url_for('auth.getcontinent') }}',
+        datatype:"json",
+        success:function(data) {
+            var data = eval(data);
+            $("<option>请选择所在洲</option>").appendTo($(".continent"));
+            for(var i=0;i<data.length;i++) {
+                $("<option value="+data[i].continentid+">"+data[i].continentname_cn+"</option>").appendTo($(".continent"));
+            }
+						$('.continent').val({{ local.continentid }});
+						$('.continent').trigger('change');
+        }
+    })
+
+// 大洲选项被改变
+    $("#location .continent").change(function(){
+        var contentinentid = $("#location .continent").val();
+        $.ajax({
+            url:'{{ url_for('auth.getcountry') }}',
+            data:{id:contentinentid},
+            datatype:"json",
+            success:function(data){
+                var data = eval(data);
+                $("#location .country option").remove();
+                $("<option>请选择国家</option>").appendTo($("#location .country"));
+                for(var i=0;i<data.length;i++) {
+                    $("<option value="+data[i].countryid+">"+data[i].countryname_cn+"</option>").appendTo($("#location .country"));
+                }
+								if(init) {
+								$(".country").val({{ local.countryid }});	
+								init = false;
+								$("#location .country").trigger('change');
+								}
+            }
+        })
+    })
+
+    $("#service .continent").change(function(){
+        var contentinentid = $("#service .continent").val();
+        $.ajax({
+            url:'{{ url_for('auth.getcountry') }}',
+            data:{id:contentinentid},
+            datatype:"json",
+            success:function(data){
+                var data = eval(data);
+                $("#service .country option").remove();
+                $("<option>请选择国家</option>").appendTo($("#service .country"));
+                for(var i=0;i<data.length;i++) {
+                    $("<option value="+data[i].countryid+">"+data[i].countryname_cn+"</option>").appendTo($("#service .country"));
+                }
+            }
+        })
+    })
+$("#location .country").change(function() {
+  countryid = $('#location .country').val();
+  country_cn = $('#location .country option:selected').text();
+	$('#location input').remove();
+	$("<input type='hidden' name='location' value='"+countryid+"'></li>").appendTo($("#location"));
+	$("<input type='hidden' name='location_cn' value='"+country_cn+"'></li>").appendTo($("#location"));
+});
+
+$("#service .country").change(function(){
+
+    var country = $("#service .country").find("option:selected").text();
+    // 判断是否已经选择
+    if(country=="请选择国家"){
+        return false;
+    }
+    // 不能重复添加国家
+    if($(".cshangjbj2fuwu").text().indexOf(country)==-1){
+        var li_list = $(".cshangjbj2fuwu li").length;
+        if (country == "请选择国家")
+            return false;
+        var countryid = $("#service .country").val();
+        var country_cn = $("#service .country option:selected").text();
+        $("<li><a href='javascript:void(0)'>"+country+"<span></span></a><input type='hidden' name='service' id='country_"+li_list+"' value='"+countryid+"'></li>").appendTo($(".cshangjbj2fuwu"));
+        $("<input type='hidden' name='service_cn' value='"+country_cn+"'>").appendTo($("#country_"+li_list).parent());
+    }
+    else{
+        alert("不可重复添加！");
+    }
+});
+{% for topic in matchs %}
+$('#CheckboxGroup1_{{ topic.topic }}').prop('checked', true);
+{% endfor %}
+
+});
+
+// 删除城市按钮
+$(".cshangjbj2fuwu").on("click", "li", function(){
+    this.remove();
+});
+
+
+</script>
+{% endblock %}

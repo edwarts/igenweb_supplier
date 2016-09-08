@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>登录</title>
+<link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="icon" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename="images/style.css") }}" />
+<script type="text/javascript" src="{{ url_for('static', filename="images/jquery.min.js") }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename="images/jquery.cookie.js") }}"></script>
+<script type="text/javascript" src="../static/js/myjs.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	
+	// 记住密码功能
+	/*
+		方法1：通过js实现（当前使用），需加入接口才能检测用户名和密码正确性
+		方法2：通过python后台设置cookie
+	 */
+	// 进入网页读取cookie是否存在
+	if($.cookie("p_login_username")!=null){
+		$("input[name='username']").val($.cookie("p_login_username"));
+		$("input[name='userpass']").val($.cookie("p_login_userpass"));
+		$("input:checkbox").prop("checked",true);
+	}
+	// 记住密码checkbox改变
+    $("input:checkbox").change(function(){
+    	if($(this).prop("checked")==true){// 选择记住密码
+    		// 得到用户名和密码
+    		var	username=$("input[name='username']").val();
+    		var userpass=$("input[name='userpass']").val();
+    		// 检测用户名和密码合法性
+    		if(isEmail(username) && userpass.length>5){
+    			$.cookie("p_login_username",username,{expires: 7});
+    			$.cookie("p_login_userpass",userpass,{expires: 7});
+    		}else{
+    			// 显示错误信息
+    			$("div.errmessage").text("用户名必须是正确的邮件地址、密码长度需大于5位！");
+    		}
+    	}
+        else{// 未选择记住密码
+        	$("div.errmessage").text("");
+        	// 清空cookie
+        	$.cookie("p_login_username",null,{expires: 0});
+        	$.cookie("p_login_userpass",null,{expires: 0});
+        }
+    });
+
+    
+});
+</script>
+</head>
+<body>
+<div class="cheader">
+	<div class="cmain">
+		<div class="cheaderz"><a href="{{ url_for('auth.login') }}">
+<img src="http://p.igenwo.com/{{ url_for('static', filename="images/logo.gif") }}"></a></div>
+	</div>
+</div>
+<div class="height20"></div>
+<div class="cmain" style="width:600px;">
+	<div class="clogin" style="background-color:#f8f8f8;padding: 40px 0px 40px 0px">
+		<div class="cloginc">
+			<div class="login_title" style="text-align:center;font-size:25px;margin-bottom:30px;">系统登录</div>
+            <form action="{{ url_for('auth.login') }}" method="post">
+			<div class="clogincd" style="background-color:#fff;    margin: 0px 0 2px;border-color:#eee;">
+				<span>
+<img src="{{ url_for('static', filename="images/ic1.png") }}"></span><em><input name='username' type="text" placeholder="请输入登录邮箱"></em>
+			</div>
+			<div class="clogincd" style="background-color:#fff;    margin: 0px 0 2px;border-color:#eee;">
+				<span>
+<img src="{{ url_for('static', filename="images/ic2.png") }}"></span><em><input name='userpass' type="password" placeholder="请输入密码（6－20位，区分大小写）"></em>
+			</div>
+			<div class="clogincd2">
+				<div class="clogincd2z"><input id="remember" name="remember" type="checkbox" value="remember" id="jizhumima"><label for="jizhumima" style="font-size:15px">记住密码</label></div>
+				<div class="clogincd2y"><a style="font-size:15px" href="{{ url_for('auth.findpassword') }}">忘记密码？</a></div>
+			</div>
+			<div class="clogincd3"><button type="submit">登录</button></div>
+            </form>
+			<div class="clogincd4">
+			<a href="{{ url_for('auth.zhuce') }}" style="font-size:15px">没有账号，免费注册&rarr;</a>
+			</div>
+		</div>
+        <div class="errmessage">
+            {{ message }}
+        </div>
+	</div>
+</div>
+
+</body>
+</html>

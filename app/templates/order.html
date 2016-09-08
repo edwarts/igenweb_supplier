@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+{% block title %}订单列表{% endblock %}
+{% block content %}
+<div class="cdingdgy">
+  <div class="cdingdgy1">
+    <div class="chuangjlx">
+      <div class="chuangjlxz">
+        <ul id="orderstatus">
+          <li class="{% if status == -1 %}a{% else %}n{% endif%}">
+            <a href='./order'>全部订单</a>
+          </li>
+          <li class="{% if status == 0 %}a{% else %}n{% endif%}">
+            <a href='./order?status=0'>待处理</a>
+          </li>
+          <li class="{% if status == 1 %}a{% else %}n{% endif%}">
+            <a href='./order?status=1'>处理中</a>
+          </li>
+          <li class="{% if status == 2 %}a{% else %}n{% endif%}">
+            <a href='./order?status=2'>已拒绝</a>
+          </li>
+          <li class="{% if status == 3 %}a{% else %}n{% endif%}">
+            <a href='./order?status=3'>待玩咖确认</a>
+          </li>
+          <li class="{% if status == 4 %}a{% else %}n{% endif%}">
+            <a href='./order?status=4'>已中标</a>
+          </li>
+          <li class="{% if status == 5 %}a{% else %}n{% endif%}">
+            <a href='./order?status=5'>未中标</a>
+          </li>
+        </ul>
+      </div>
+      <div class="chuangjlxy">
+        <div>
+          <input type="text" placeholder="请输入关键字" class="search_text"><button type="submit" class="search_btn"></button>
+        </div>
+      </div>
+    </div>
+    <div class="chuangjlxc3">
+      <table id="listtable" width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr><td width='100'>玩咖姓名</td><td width='240'>目的地</td><td width='140'>出行人数</td><td width='140'>出行时间<a href='#'><img src='/static/images/jt.gif'></a      ></td><td width='190'>状态</td><td colspan='2'>操作</td></tr>
+        {% for order in orders %}
+        <tr>
+          <td width="100">{{ order.order.wk_name}}</td>
+          <td width="240">{{ order.order.city_name}}</td>
+          <td width="140">{{ order.order.people_num }}</td>
+          <td width="140">{{ order.order.begin_date }}</td>
+          <td width="190">{{ order.status_cn }}</td>
+					<td colspan="2"><a href='/order/{{ order.order_id }}'> 操作</a></td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}   

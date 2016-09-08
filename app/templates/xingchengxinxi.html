@@ -1,0 +1,762 @@
+{% extends 'layout.html' %}
+{% block title %}行程信息 {% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='images/jquery-ui.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='images/jquery.datetimepicker.css') }}"/>
+{% endblock %}
+	{% block content %}
+	<div class="cdingdgy">
+		<div class="cdingdgy1">
+			<div class="chuangjlx">
+				<div class="chuangjlxz">
+					{% if it.status == 1 %}
+					<li><a href="/itinerary/modify/{{ it.id }}/base">基础信息</a></li>
+					<li class="a"><a href="/itinerary/modify/{{ it.id }}/it">行程信息</a></li>
+					<li class=""><a href="/itinerary/modify/{{ it.id }}/price">价格信息及注意事项</a></li>
+					{% else %}
+					<li class="a"><a href="/itinerary/create/{{it.id}}">行程信息</a></li>
+					{% endif %}
+				</div>
+				<div class="chuangjlxy2">
+					<input type="hidden" id="itineraryid" value="{{ id }}" />
+					<a href="/itinerary/modify/{{ it.id }}/price">下一步</a>
+				</div>
+			</div>
+			<div class="chuangjlxc">
+				<div class="cpcjxctop">
+					<div class="cpcjxctopz">
+						<ul id="day">
+							<li class="a"><a href="#" onclick="javascript:day(this, 0)">D1</a><span title="删除" onclick="javascript:spanClick(this, 0)"></span></li>
+						</ul>
+					</div>
+					<div class="cpcjxctopy">
+						<li><a href="#" id="cpcjxctopy_jia">+</a></li>
+						<li><a href="#" id="cpcjxctopy_jian">-</a></li>
+					</div>
+				</div>
+
+				<div class="cpcjxcbot clearfix">
+					<div class="cpcjxcbotz">
+						<div class="cpcjxcbotzz">
+							<div id="day_0">
+								<div class="cpcjxcbotzzt">
+									<div class="cpcjxcbotzztz">
+										<div class="cpcjxcbotzztz1">
+											<span style="color:#999;font-size:13px;">选择日期：</span><input type="text" placeholder="" id="datetimepicker0" />
+										</div>
+										<div class="cpcjxcbotzztz2">
+											<span style="color:#999;font-size:13px;">途径城市：</span><input type="text" placeholder="" style="font-size:13px;">
+										</div>
+									</div>
+									<div style='display:none;' class="cpcjxcbotzzty" id="hhDrop0">
+										<span class="boxSearch">
+											<img src="http://p.igenwo.com/{{ url_for('static', filename='images/bj.png') }}">
+										</span>
+										<div class="search_form_suggest">
+											<div class="cpcjxc_tanc">
+												<div class="cpcjxc_tanct">
+													<div class="cpcjxc_tanctz">操作</div>
+													<div class="cpcjxc_tancty">
+														<span>
+															<img src="http://p.igenwo.com/{{ url_for('static', filename='images/x.gif') }}">
+														</span>
+													</div>
+												</div>
+												<div class="cpcjxc_tancc">
+													<li><img src="http://p.igenwo.com/static/images/ti5.png">添加城际交通</li>
+													<li id="cpcjxc_tancc_yw_1"><img src="http://p.igenwo.com/static/images/ti4.png">添加当日游玩</li>
+													<li id="cpcjxc_tancc_zs_1"><img src="http://p.igenwo.com/static/images/ti3.png">添加当日住宿</li>
+													<li id="cpcjxc_tancc_bz_1"><img src="http://p.igenwo.com/static/images/ti2.png">添加当日备注</li>
+													<li class="cpcjxc_tancc_5" onclick="clearday(0);">
+														<img src="http://p.igenwo.com/{{ url_for('static', filename='images/ti1.png') }}">清空该日行程
+													</li>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="cpcjxcbotzzb">
+									<div id="sortable0">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="xingchsupdel">
+							<div class="chuangjlx_xc">
+								<div class="chuangjlx_sp clearfix">
+									<div class="chuangjlx_spz">
+										<div class="nice-select" id="city" >
+											<input id="city_input" name="city" type="text" placeholder="请输入您服务区域中的城市名称">
+											<input id="city_input_val" type="text" style="display:none">
+										</div>
+									</div>
+									<div class="chuangjlx_spzz">
+										<input type="text" id="searchword" name="searchword" placeholder="输入关键词搜索碎片" value="">
+									</div>
+									<div class="chuangjlx_sp_xcy" style="margin-right:10px;">
+										<a href="{{ url_for('auth.createsuipian') }}">
+											<img src="http://p.igenwo.com/{{ url_for('static', filename='images/xz.gif') }}">新增碎片
+										</a>
+									</div>
+								</div>
+								<div class="chuangjlx_sp_xc clearfix">
+									<div class="chuangjlxc4z chuangjlxc4z_xc">
+										<ul id="suipian">
+											<!--  -->
+											<li class="n" data-n='0' onclick="sTab(this, 0)"><a href="#">景点</a></li>
+											<li class="n" data-n='1' onclick="sTab(this, 1)"><a href="#">活动</a></li>
+											<li class="n" data-n='2' onclick="sTab(this, 2)"><a href="#">餐馆</a></li>
+											<li class="n" data-n='3' onclick="sTab(this, 3)"><a href="#">酒店</a></li>
+											<li class="n" data-n='4' onclick="sTab(this, 4)"><a href="#">购物</a></li>
+											<li class="a" data-n='5' onclick="sTab(this, 5)"><a href="#">我的</a></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<div id="myTab0_Content1">
+								<div id="cpcjxcbotzy_0" style='display:none'><input class='scroll' style='display:none'></div>
+								<div id="cpcjxcbotzy_1" style='display:none'><input class='scroll' style='display:none'></div>
+								<div id="cpcjxcbotzy_2" style='display:none'><input class='scroll' style='display:none'></div>
+								<div id="cpcjxcbotzy_3" style='display:none'><input class='scroll' style='display:none'></div>
+								<div id="cpcjxcbotzy_4" style='display:none'><input class='scroll' style='display:none'></div>
+								<div id="cpcjxcbotzy_5" style='display:none'><input class='scroll' style='display:none'></div>
+							</div>
+							<div class="psuipxdel"></div>
+						</div>
+					</div>
+				</div>			
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block js %}
+<script src="{{ url_for('static', filename='images/jquery-ui.min.js') }}"></script>
+<script src="{{ url_for('static', filename='images/hhDrop2.js') }}"></script>
+<script src="{{ url_for('static', filename='images/huadong.js') }}"></script>
+<script src="{{ url_for('static', filename='images/jquery.datetimepicker.js') }}"></script>
+<script id="expensetmpl" type = "text/x-jquery-tmpl">
+    <li data-expenseid="${expenseid}"><span class="co_li_sp1">${name}</span><span class="co_li_sp2">${currency} ${price}</span><span class="co_li_sp3">${cnt}</span><span class="co_li_sp4">${currency} ${total}</span><span class="co_li_sp5"><a href="javascript:void(0)">删除</a></span></li>
+</script>
+
+<script id="piecelisttmpl" type="text/x-jquery-tmpl">
+    <div class='chuangjlxc5d'>
+        <div class='chuangjlxc5d1'><img src='${cover}'></div>
+        <div class='chuangjlxc5d2'>
+            <input type="hidden" name="pieceid" value="${id}" />
+            <h3>${name_cn}</h3>
+            <h4>${description}</h4>
+            <h5><span>时长：1.51小时</span><em><i>${price}</i> 元起</em></h5>
+        </div>
+        <div class='chuangjlxc5d3'><a href='#'>+ 添加到行程</a></div>
+	</div>
+</script>
+<script id="dayinfotmpl" type="text/x-jquery-tmpl">
+    ${day}<br>
+</script>
+
+<script id="pieceinfotmpl" type="text/x-jquery-tmpl">
+    <div class="psuipxdel1">
+        <div class="psuipxdel1z"><span><img src="http://p.igenwo.com/static/images/xx.gif"></span></div>
+        <div class="psuipxdel1y">
+            ${name_cn}<br>${name_en}
+        </div>
+    </div>
+    <div class="psuipxdel2">
+        <div class="psuipxdel21">
+            <div class="psuipxdel21z"><img src="http://p.igenwo.com/static/${cover}"></div>
+            <div class="psuipxdel21y">
+                <h2><span>${price}</span>元起</h2>
+                <h3><span>11875 次浏览</span><em>21 次添加</em></h3>
+                <h3>时长：1.5小时</h3>
+                <h4 class="add_to_xc"><a href="javascript:void(0)" data-suipianID="${suipianID}">+添加到行程</a></h4>
+                <h4 class="del_my_suipian"><a href="javascript:void(0)" data-suipianID="${suipianID}">删除碎片</a></h4>
+            </div>
+        </div>
+        <div class="suipidel2z3">
+            <div class="suipidel2z3t"><img src="http://p.igenwo.com/static/images/sp1.gif">景点简介</div>
+            <div class="suipidel2z3c">
+                ${description}
+            </div>
+        </div>
+        <div class="suipidel2z4">
+            <li><span><img src="http://p.igenwo.com/static/images/sp2.gif">地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址：</span><em>${address}</em></li>
+            <li><span><img src="http://p.igenwo.com/static/images/sp3.gif">时&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;间：</span><em>${period}</em></li>
+            <li><span><img src="http://p.igenwo.com/static/images/sp4.gif">门&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;票：</span><em>${ticket}</em></li>
+            <li><span><img src="http://p.igenwo.com/static/images/sp5.gif">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话：</span><em>${tel}</em></li>
+            <li><span><img src="http://p.igenwo.com/static/images/sp6.gif">参考网址：</span><em>${url}</em></li>
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+var ajax_lock = true;
+var timer = "";
+var CityList = [{% for x,y in cityList %}{label: '{{ y }}', value: {{ x }}},{% endfor %}];
+$(document).ready(function () {
+	$('#city_input').autocomplete({
+		source: CityList,
+		select: function(event, ui) {
+			$("#city_input").val(ui.item.label);
+			$("#city_input_val").val(ui.item.value);
+			event.preventDefault();
+			changeCity();
+		}
+	});
+	$("#itineraryid").val({{ it.id }});
+	var itineraryid = $("#itineraryid").val();
+	$(".scroll").val(0);
+	{% if it.status == 1 %} 
+	var info = {{ da|safe }};
+	{% else %}
+	var info = [];
+	{% endif %}
+	for (var i=0; i<info.length; i++) {
+		if (i == 0) {
+			for(var j=0; j<info[0].length; j++) {
+				var suipian_html = "<div class='cpcjxcbotzzbd' id='hhDrop"+(j+1)+"'>\
+														<div class='cpcjxcbotzzbdz'><img src='http://p.igenwo.com/static/images/"+info[0][j].type+"'>"+info[0][j].name+"</div>\
+														<div class='cpcjxcbotzzbdy boxSearch'>\
+														<span class='cpcjxcbotzzbdy_span'><img src='http://p.igenwo.com/static/images/xcr.png'></span>\
+														</div>\
+														<div class='search_form_suggest'>\
+														<div class='cpcjxc_tanct'>\
+														<div class='cpcjxc_tanctz'>操作</div>\
+														<div class='cpcjxc_tancty'><span><a item='close'><img src='http://p.igenwo.com/static/images/x.gif'></a></span></div>\
+														</div>\
+														<div class='cpcjxc_tancc'>\
+														<li class='cpcjxc_tancc_5'><img src='http://p.igenwo.com/static/images/ti1.png'>删除</li>\
+														</div>\
+														</div>\
+														<input type='hidden' name='pieceid' value='"+info[0][j].id+"' />\
+														</div>";
+				$(suipian_html).appendTo("#sortable0");
+			}
+		} else {
+			var tabList = document.getElementById("day").getElementsByTagName("li");
+			var tablen = tabList.length;
+			var day_html = "<div id='day_"+tablen+"'>\
+											<div class='cpcjxcbotzzt'>\
+											<div class='cpcjxcbotzztz'>\
+											<div class='cpcjxcbotzztz1'>\
+											<span style='color:#999;font-size:13px;'>选择日期：</span><input type='text' placeholder='' id='datetimepicker"+tablen+"'/>\
+											</div>\
+											<div class='cpcjxcbotzztz2'>\
+											<span style='color:#999;font-size:13px;'>途径城市：</span><input type='text' placeholder=''>\
+											</div>\
+											</div>\
+											<div style='display:none;' class='cpcjxcbotzzty' id='hhDrop"+tablen+"'>\
+											<span class='boxSearch'><img src='http://p.igenwo.com/static/images/bj.png'></span>\
+											<div class='search_form_suggest'>\
+											<div class='cpcjxc_tanc'>\
+											<div class='cpcjxc_tanct'>\
+											<div class='cpcjxc_tanctz'>操作</div>\
+											<div class='cpcjxc_tancty'><span><img src='http://p.igenwo.com/static/images/x.gif'></span></div>\
+											</div>\
+											<div class='cpcjxc_tancc'>\
+											<li><img src='http://p.igenwo.com/static/images/ti5.png'>添加城际交通</li>\
+											<li><img src='http://p.igenwo.com/static/images/ti4.png'>添加当日游玩</li>\
+											<li><img src='http://p.igenwo.com/static/images/ti3.png'>添加当日住宿</li>\
+											<li><img src='http://p.igenwo.com/static/images/ti2.png'>添加当日备注</li>\
+											<li class='cpcjxc_tancc_5' onclick='clearday("+tablen+")'><img src='http://p.igenwo.com/static/images/ti1.png'>清空该日行程</li>\
+											</div>\
+											</div>\
+											</div>\
+											</div>\
+											</div>\
+											<div class='cpcjxcbotzzb'>\
+											<div id='sortable"+tablen+"'></div>\
+											</div>\
+											</div>";
+			for(var m=0; m <=tablen; m++) {
+				if (m == tablen) {
+					$('<li class="a"><a href="#" onclick="javascript:day(this, '+m+')">D'+(m+1)+'</a><span title="删除" onclick="javascript:spanClick(this, '+m+')"></span></li>').appendTo($("#day"));
+					tabList[m].className = "a";
+					$(day_html).appendTo($(".cpcjxcbotzz"));
+					$('div[id*="hhDrop"]').hhDrop({});
+					document.getElementById("day_"+m).style.display = "block";
+				} else {
+					tabList[m].className = "n";
+					document.getElementById("day_"+m).style.display = "none";
+				}
+			}
+			for(var k=0; k<info[i].length; k++) {
+				var suipian_html = "<div class='cpcjxcbotzzbd' id='hhDrop"+(k+1)+"'>\
+														<div class='cpcjxcbotzzbdz'><img src='http://p.igenwo.com/static/images/"+info[i][k].type+"'>"+info[i][k].name+"</div>\
+														<div class='cpcjxcbotzzbdy boxSearch'>\
+														<span class='cpcjxcbotzzbdy_span'><img src='http://p.igenwo.com/static/images/xcr.png'></span>\
+														</div>\
+														<div class='search_form_suggest'>\
+														<div class='cpcjxc_tanct'>\
+														<div class='cpcjxc_tanctz'>操作</div>\
+														<div class='cpcjxc_tancty'><span><a item='close'><img src='http://p.igenwo.com/static/images/x.gif'></a></span></div>\
+														</div>\
+														<div class='cpcjxc_tancc'>\
+														<li class='cpcjxc_tancc_5'><img src='http://p.igenwo.com/static/images/ti1.png'>删除</li>\
+														</div>\
+														</div>\
+														<input type='hidden' name='pieceid' value='"+info[i][k].id+"' />\
+														</div>";
+				$(suipian_html).appendTo("#sortable"+i);
+			}
+
+		}
+		$( "[id*='sortable']" ).sortable();
+		loadData(5);																																																				
+	}
+	$("#searchword").on("change input", function () {
+		$(".scroll").val(0);
+		$(".chuangjlxc5d").remove();
+		n = $("#suipian .a").data("n");
+		clearTimeout(timer);
+		timer = setTimeout(function (n) {loadData(n)}, 1000, n);	
+	});
+});
+
+function saveData() {
+	var id = $("#itineraryid")[0].value;
+	var days = $("[id*='day_']");
+	var itinerary = new Array();
+	for (var i=0; i<days.length; i++) {
+		var obj = $("[id='day_"+i+"']").find("[name='pieceid']");
+		var piecelist = "";
+		for (var j=0; j<obj.length; j++) {
+			var pieceid=obj[j].value;
+			if (j == 0) piecelist = pieceid;
+			else piecelist = piecelist+','+pieceid;
+		}
+		itinerary.push(piecelist);
+	}
+	tmp = ''
+		for(n in itinerary) {
+			tmp += itinerary[n] + ':';
+		}
+	$.ajax({
+		{% if it.status == 1 %}
+		url:'/itinerary/modify/{{ it.id }}/it',
+		{% else %}
+		url:'/itinerary/create/{{ it.id }}',
+		{% endif %}
+		data:{'data': JSON.stringify(itinerary)},
+		type:'post',
+		datatype:"json",
+		success:function(data) {
+			if (data == 'success') {
+				console.log('保存成功');
+			}
+		}
+	});
+};
+
+function youwan(Num){
+    var obj = "myPdt";
+    var tabList = document.getElementById(obj).getElementsByTagName("li");
+    for(var i=0; i <tabList.length; i++) {
+        if (i == Num) {
+            tabList[i].className = "a";
+            document.getElementById("suipian_"+i).style.display = "block";
+        } else {
+            tabList[i].className = "n";
+            document.getElementById("suipian_"+i).style.display = "none";
+        }
+    }
+    event.preventDefault();
+}
+function day(obj, Num){
+
+    if(obj.className == "a")return;
+    var tempObj = obj.parentNode;
+    var tabObj = tempObj.parentNode.id;
+    var tabList = document.getElementById(tabObj).getElementsByTagName("li");
+    for(var i=0; i <tabList.length; i++) {
+        if (i == Num) {
+            tabList[i].className = "a";
+            document.getElementById("day_"+i).style.display = "block";
+        } else {
+            tabList[i].className = "n";
+            document.getElementById("day_"+i).style.display = "none";
+        }
+    }
+    event.preventDefault();
+
+}
+function spanClick(obj, num) {
+    var tabObj = obj.parentNode;
+    var liObj = tabObj.parentNode.id;
+    var li_list = document.getElementById(liObj).getElementsByTagName("li");
+    var day_list = $('div [id*="day_"]');
+    for (var i=0;i<li_list.length;i++) {
+        if (i == num) {
+            if (li_list[i].className == "a") {
+                li_list[i-1].className = "a";
+                day_list[i-1].style.display = "block";
+            }
+            day_list[i].remove();
+        } else if (i>num) {
+							day_list[i].id = "day_"+(i-1);
+					}
+			}
+			if (li_list[li_list.length-1].className == "a") {
+					li_list[li_list.length-2].className = "a";
+			}
+			li_list[li_list.length-1].remove();
+	}
+	</script>
+	<script>
+	$(document).ready(function(){
+			// 碎片图片被选中
+		$("[id*='cpcjxcbotzy_']").on('click', 'img', function(){
+					var obj = $(this).parents("[class='boxSearch']")[0];
+					var pieceid = $(this).parent().next().children().val();
+					$.ajax({
+							url:'/auth/getpiecebyid/'+pieceid,
+							type:'post',
+							datatype:"json",
+							success:function(data) {
+									data = eval(data);
+									data = data[0].piecelist[0]; // 后端需要返回一个suipianID(碎片编号)
+									$(".psuipxdel").find("[class*='psuipxdel']").remove();
+									$("#pieceinfotmpl").tmpl(data).appendTo(".psuipxdel");
+									// 如果不是选中的我的碎片就隐藏删除按钮
+									if($("li#getmypiece").attr("class")!="a"){
+											$("h4.del_my_suipian").remove();
+									}
+									$(".psuipxdel").show(500);
+							}
+					});
+		});
+			// 删除我的碎片
+			$("div.xingchsupdel").on("click","h4.del_my_suipian a",function(){
+					if(confirm("确定要删除这个碎片吗?")){
+							var suipianID=$(this).attr("data-suipianid");
+
+							/* 请求删除碎片接口
+							$.post("????","{suipianID:suipianID}",function(data){
+									if(data=="ok"){
+											alert("删除碎片成功！");
+									}
+							});
+
+							*/
+					}
+			});
+
+		 
+
+			// 弹出碎片信息页面的添加到行程按钮
+			$("div.xingchsupdel").on("click","h4.add_to_xc a",function(){
+					var sthis=$(this);
+					var suipianID=$(this).attr("data-suipianid");
+
+					var day_list = document.getElementById("day").getElementsByTagName("li");
+        var pieceid = suipianID;
+        var name = sthis.parents().find("div.psuipxdel1y").text();
+        for (var i=0;i<day_list.length;i++) {
+            if (day_list[i].className == "a") {
+                var suipian_list = $("#sortable"+i);
+                var suipian_len = suipian_list.children().length+1;
+                var suipian_html = "<div class='cpcjxcbotzzbd' id='hhDrop"+suipian_len+"'>\
+                                            <div class='cpcjxcbotzzbdz'><img src='http://p.igenwo.com/static/images/xc2.png'>"+name+"</div>\
+                                            <div class='cpcjxcbotzzbdy boxSearch'>\
+                                                <span class='cpcjxcbotzzbdy_span'><img src='http://p.igenwo.com/static/images/xcr.png'></span>\
+                                            </div>\
+                                            <div class='search_form_suggest'>\
+                                                <div class='cpcjxc_tanct'>\
+                                                    <div class='cpcjxc_tanctz'>操作</div>\
+                                                    <div class='cpcjxc_tancty'><span><a item='close'><img src='http://p.igenwo.com/static/images/x.gif'></a></span></div>\
+                                                </div>\
+                                                <div class='cpcjxc_tancc'>\
+                                                    <li class='cpcjxc_tancc_5'><img src='http://p.igenwo.com/static/images/ti1.png'>删除</li>\
+                                                </div>\
+                                            </div>\
+                                            <input type='hidden' name='pieceid' value='"+pieceid+"' />\
+                                        </div>";
+                $(suipian_html).appendTo(suipian_list);
+            }
+        }
+        event.preventDefault();
+        $('div[id*=hhDrop]').hhDrop({});
+        $( "[id*='sortable']" ).sortable();
+				saveData();
+    });
+
+
+    $("[class='psuipxdel']").on('click', '.psuipxdel1z', function(){
+  		$(".psuipxdel").hide(500);
+	});
+
+    // 新增点击碎片条启用左键双击点击菜单 Edgar 2016.6.21
+    $("div.cpcjxcbotzz").on('click', 'div.cpcjxcbotzzbd', function(event){
+        $('div[id*=hhDrop]').hhDrop({});
+    });
+
+    // 行程碎片删除按钮 Edgar 2016.6.21修改
+    $("div.cpcjxcbotzz").on('click', 'li.cpcjxc_tancc_5', function(event){
+        $('div[id*=hhDrop]').hhDrop({});
+  		$(this).parent().parent().parent().remove();
+        $('div[id*=hhDrop]').hhDrop({});
+			saveData();
+	});
+
+
+    // 点击碎片添加到行程按钮(页面初始进入时) 代码可真乱啊
+    $("[id*='cpcjxcbotzy_']").on('click', '.chuangjlxc5d3', function(){
+        
+        var day_list = document.getElementById("day").getElementsByTagName("li");
+        var obj = $(this).parents("[class='chuangjlxc5d']")[0];
+        var temp = obj.getElementsByTagName("h3")[0];
+        var pieceid = obj.getElementsByTagName("input")[0].value;
+        var name = temp.innerHTML;
+        for (var i=0;i<day_list.length;i++) {
+            if (day_list[i].className == "a") {
+                var suipian_list = $("#sortable"+i);
+                var suipian_len = suipian_list.children().length+1;
+                var suipian_html = "	<div class='cpcjxcbotzzbd' id='hhDrop"+suipian_len+"'>\
+                                            <div class='cpcjxcbotzzbdz'><img src='http://p.igenwo.com/static/images/xc2.png'>"+name+"</div>\
+                                            <div class='cpcjxcbotzzbdy boxSearch'>\
+                                                <span class='cpcjxcbotzzbdy_span'><img src='http://p.igenwo.com/static/images/xcr.png'></span>\
+                                            </div>\
+                                            <div class='search_form_suggest'>\
+                                                <div class='cpcjxc_tanct'>\
+                                                    <div class='cpcjxc_tanctz'>操作</div>\
+                                                    <div class='cpcjxc_tancty'><span><a item='close'><img src='http://p.igenwo.com/static/images/x.gif'></a></span></div>\
+                                                </div>\
+                                                <div class='cpcjxc_tancc'>\
+                                                    <li class='cpcjxc_tancc_5'><img src='http://p.igenwo.com/static/images/ti1.png'>删除</li>\
+                                                </div>\
+                                            </div>\
+                                            <input type='hidden' name='pieceid' value='"+pieceid+"' />\
+                                        </div>";
+                $(suipian_html).appendTo(suipian_list);
+            }
+        }
+        event.preventDefault();
+        $('div[id*=hhDrop]').hhDrop({});
+        $( "[id*='sortable']" ).sortable();
+				saveData();
+	});
+
+	$(".psuipxdel1z").click(function(){
+  		$(".psuipxdel").hide();
+	});
+});
+$("[id*='cpcjxc_tancc_yw']").on('click', function(){
+  	$("#cpcjxc_tc_pan_yw").show();
+});
+$("#cpcjxc_tancc_zs").click(function(){
+  	$("#cpcjxc_tc_pan_zs").show();
+});
+$("#cpcjxc_tancc_bz").click(function(){
+  	$("#cpcjxc_tc_pan_bz").show();
+});
+$("#tianjiajstime").click(function(){
+	$("#tianjiajstime").text("结束时间");
+  	$("#tianjiajstime_show").show();
+});
+$(".cpcjxc_tc_panc_gb").click(function(){
+  	$(".cpcjxc_tc_pan").hide();
+});
+$(".cpcjxc_tc_pancd3_but button").click(function(){
+  	$(".cpcjxc_tc_pan").hide();
+});
+
+
+$('input[id*="datetimepicker"]').datetimepicker({
+	yearOffset:0,
+	lang:'ch',
+	timepicker:false,
+	format:'Y-m-d',
+	formatDate:'Y/m/d',
+	minDate:'+1970/01/02', // yesterday is minimum date
+	maxDate:'+1980/01/02' // and tommorow is maximum date calendar
+});
+$(function(){
+	$('div[id*=hhDrop]').hhDrop({});
+});
+
+// 行程天数加号被点击
+$("#cpcjxctopy_jia").click(function(){
+    var tabList = document.getElementById("day").getElementsByTagName("li");
+    var tablen = tabList.length;
+    // 得到上一天日期 Edgar 2016.6.21
+    var date_pre=$("div.cpcjxcbotzztz1 input[id*='datetimepicker']:last").val();
+    var date_add=date_add1(date_pre);
+    var day_html = "                                <div id='day_"+tablen+"'>\
+								<div class='cpcjxcbotzzt'>\
+									<div class='cpcjxcbotzztz'>\
+										<div class='cpcjxcbotzztz1'>\
+											<span style='color:#999;font-size:13px;'>选择日期：</span><input value='"+date_add+"' type='text' placeholder='' id='datetimepicker"+tablen+"'/>\
+										</div>\
+										<div class='cpcjxcbotzztz2'>\
+											<span style='color:#999;font-size:13px;'>途径城市：</span><input type='text' placeholder=''>\
+										</div>\
+									</div>\
+									<div style='display:none;' class='cpcjxcbotzzty' id='hhDrop"+tablen+"'>\
+										<span class='boxSearch'><img src='http://p.igenwo.com/static/images/bj.png'></span>\
+										<div class='search_form_suggest'>\
+											<div class='cpcjxc_tanc'>\
+												<div class='cpcjxc_tanct'>\
+													<div class='cpcjxc_tanctz'>操作</div>\
+													<div class='cpcjxc_tancty'><span><img src='http://p.igenwo.com/static/images/x.gif'></span></div>\
+												</div>\
+												<div class='cpcjxc_tancc'>\
+													<li><img src='http://p.igenwo.com/static/images/ti5.png'>添加城际交通</li>\
+													<li><img src='http://p.igenwo.com/static/images/ti4.png'>添加当日游玩</li>\
+													<li><img src='http://p.igenwo.com/static/images/ti3.png'>添加当日住宿</li>\
+													<li><img src='http://p.igenwo.com/static/images/ti2.png'>添加当日备注</li>\
+													<li class='cpcjxc_tancc_5' onclick='clearday("+tablen+")'><img src='http://p.igenwo.com/static/images/ti1.png'>清空该日行程</li>\
+												</div>\
+											</div>\
+										</div>\
+									</div>\
+								</div>\
+								<div class='cpcjxcbotzzb'>\
+									<div id='sortable"+tablen+"'>\
+									</div>\
+								</div>\
+                                </div>"
+    for(var i=0; i <=tablen; i++) {
+        if (i == tablen) {
+            $('<li class="a"><a href="#" onclick="javascript:day(this, '+i+')">D'+(i+1)+'</a><span title="删除" onclick="javascript:spanClick(this, '+i+')"></span></li>').appendTo($("#day"));
+            tabList[i].className = "a";
+            $(day_html).appendTo($(".cpcjxcbotzz"));
+            $('div[id*="hhDrop"]').hhDrop({});
+            document.getElementById("day_"+i).style.display = "block";
+        } else {
+            tabList[i].className = "n";
+            document.getElementById("day_"+i).style.display = "none";
+        }
+    }
+
+    $('input[id*="datetimepicker"]').datetimepicker({
+        yearOffset:0,
+        lang:'ch',
+        timepicker:false,
+        format:'Y-m-d',
+        formatDate:'Y/m/d',
+        minDate:'+1970/01/02', // yesterday is minimum date
+        maxDate:'+1980/01/02' // and tommorow is maximum date calendar
+    });
+
+    // 隐藏行程减号按钮 Edgar 2016.6.21
+    $(".cpcjxctopz span").hide();
+});
+
+// 行程天数减号
+$("#cpcjxctopy_jian").click(function(){
+  	$(".cpcjxctopz span").toggle();
+});
+// 删除某天
+function clearday(id) {
+    $('.sortable'+id).remove();
+		console.log('aaaaaa');
+		saveData();
+}
+
+$('.chuangjlxc5d3').click(function(){
+    var day_list = document.getElementById("day").getElementsByTagName("li");
+    for (i=0;i<day_list.length;i++) {
+        if (day_list[i].className == "a") {
+            var suipian_list = $("#sortable"+i);
+            var suipian_len = suipian_list.children().length;
+            var suipian_html = "										<div class='cpcjxcbotzzbd' id='hhDrop"+suipian_len+"'>\
+										<div class='cpcjxcbotzzbdz'><img src='http://p.igenwo.com/static/images/xc1.png'> 出发：成都</div>\
+										<div class='cpcjxcbotzzbdy boxSearch'>\
+											<span class='cpcjxcbotzzbdy_span'><img src='http://p.igenwo.com/static/images/xcr.png'></span>\
+										</div>\
+										<div class='search_form_suggest'>\
+											<div class='cpcjxc_tanct'>\
+												<div class='cpcjxc_tanctz'>操作</div>\
+												<div class='cpcjxc_tancty'><span><a item='close'><img src='http://p.igenwo.com/static/images/x.gif'></a></span></div>\
+											</div>\
+											<div class='cpcjxc_tancc'>\
+												<li class='cpcjxc_tancc_5'><img src='http://p.igenwo.com/static/images/ti1.png'>删除</li>\
+											</div>\
+										</div>\
+									</div>"
+            $(suipian_html).appendTo(suipian_list);
+        }
+    }
+});
+
+$( "[id*='sortable']" ).sortable();
+$( "[id*='sortable']" ).disableSelection();
+$("#t1").click(function(){
+	popWin("detail");
+});
+function sTab(dom, n) {
+	if($('#city_input_val').val() == '') {
+			alert('请输入您服务区域内的城市名称，并点击弹出的选项，如需修改服务区域，请进入我的主页.');
+			return
+	}
+	$('#suipian>li').removeClass('a');	
+	$(dom).addClass('a');
+	$('#myTab0_Content1>div').hide();
+	$('#searchword').val('');
+	ajaxPieces('#cpcjxcbotzy_'+n, n);
+	$('#cpcjxcbotzy_'+n).show();
+}
+function ajaxPieces(dom, n) {
+	if($(dom + " .chuangjlxc5d").length == 0) {
+		loadData(n);
+		$(dom).on('scroll', {index: n}, function(e) {
+			if(($(this).prop("scrollHeight") - $(this).scrollTop()) < 1800) {
+				loadData(e.data.index);
+			}
+		});
+	}	
+}
+function loadData(n) {
+	var page = $("#cpcjxcbotzy_"+n+ " .scroll").val();
+	url = "/api_v1/piecelist?";
+	if(page === "false") {
+		return false;
+	}
+	else {
+		url = url + 'page=' + page + '&';
+	}
+	if(ajax_lock) {
+		ajax_lock = false;
+	} else {
+		return false;
+	}
+	var dom = "#cpcjxcbotzy_" + n;
+	var cityid = $("#city_input_val").val();
+	var type = n;
+	var keyword = $("#searchword").val();
+	url = url + "cityid=" + cityid + "&";
+	url = url + "type=" + type + "&";
+	if((keyword != undefined) && (keyword != "")) {
+		url = url + "keyword=" + keyword + '&';
+	}
+	$.ajax({
+		url: url,
+		datatype:"json",
+		success:function(data) {
+			data = eval(data);
+			ajax_lock = true;
+			if (data.length == 0) {
+				$("<div class='chuangjlxc5d'><p class='noresult' style='margin:30px 20px;font-size:14px;'>没有结果</p></div>").appendTo("#cpcjxcbotzy_"+n);
+			} else {
+				for(var i=0; i<data.length;i++) {
+					$(".noresult").remove();
+					$("#piecelisttmpl").tmpl(data[i]).appendTo("#cpcjxcbotzy_"+n);
+				}
+			}
+			if(data.length < 40) {
+				$("#cpcjxcbotzy_"+n+ " .scroll").val('false');
+			} else {
+				$("#cpcjxcbotzy_"+n+ " .scroll").val(parseInt($("#cpcjxcbotzy_"+n+ " .scroll").val())+1);
+			}
+			$("#cpcjxcbotzy_"+n).show('slow');
+		}
+	});
+};
+function changeCity() {
+	$(".scroll").val(0);
+	$(".chuangjlxc5d").remove();
+	$('#searchword').val('');
+	n = $("#suipian .a").data("n");
+	loadData(n);	
+};
+</script>
+{% endblock %}

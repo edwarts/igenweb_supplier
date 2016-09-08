@@ -1,0 +1,304 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>注册</title>
+<link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="icon" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='images/style.css') }}" />
+<script type="text/javascript" src="{{ url_for('static', filename='images/jquery.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/handlebars.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/handlebars-jquery.js') }}"></script>
+    <script id="continent_temp" type="text/x-handlebars-template"></script>
+<script>
+$(document).ready(function(){
+	// 页面载入时获取大洲
+    $.ajax({
+        url:'{{ url_for('auth.getcontinent') }}',
+        datatype:"json",
+        success:function(data) {
+            var data = eval(data);
+            $("<option>请选择所在洲</option>").appendTo($(".continent"));
+            for(var i=0;i<data.length;i++) {
+                $("<option value="+data[i].continentid+">"+data[i].continentname_cn+"</option>").appendTo($(".continent"));
+            }
+        }
+    })
+
+// 大洲选项被改变
+    $("#location .continent").change(function(){
+        var contentinentid = $("#location .continent").val();
+        $.ajax({
+            url:'{{ url_for('auth.getcountry') }}',
+            data:{id:contentinentid},
+            datatype:"json",
+            success:function(data){
+                var data = eval(data);
+                $("#location .country option").remove();
+                $("<option>请选择国家</option>").appendTo($("#location .country"));
+                for(var i=0;i<data.length;i++) {
+                    $("<option value="+data[i].countryid+">"+data[i].countryname_cn+"</option>").appendTo($("#location .country"));
+                }
+            }
+        })
+    })
+
+    $("#service .continent").change(function(){
+        var contentinentid = $("#service .continent").val();
+        $.ajax({
+            url:'{{ url_for('auth.getcountry') }}',
+            data:{id:contentinentid},
+            datatype:"json",
+            success:function(data){
+                var data = eval(data);
+                $("#service .country option").remove();
+                $("<option>请选择国家</option>").appendTo($("#service .country"));
+                for(var i=0;i<data.length;i++) {
+                    $("<option value="+data[i].countryid+">"+data[i].countryname_cn+"</option>").appendTo($("#service .country"));
+                }
+            }
+        })
+    })
+
+// 国家选项被改变
+//    $("#country").change(function(){
+//        var countryid = $("#country").val();
+//        // 暂时隐藏城市选项
+//        $.ajax({
+//            url:'{{ url_for('auth.getcity') }}',
+//            data:{id:countryid},
+//            datatype:"json",
+//            success:function(data){
+//                var data = eval(data);
+//                $("#city option").remove();
+//                $("<option>请选择城市</option>").appendTo($("#city"));
+//                for(var i=0;i<data.length;i++) {
+//                    $("<option value="+data[i].cityid+">"+data[i].cityname_cn+"</option>").appendTo($("#city"));
+//                }
+//            }
+//        })
+//    })
+
+$("#location .country").change(function() {
+  countryid = $('#location .country').val();
+  country_cn = $('#location .country option:selected').text();
+	$('#location input').remove();
+	$("<input type='hidden' name='location' value='"+countryid+"'></li>").appendTo($("#location"));
+	$("<input type='hidden' name='location_cn' value='"+country_cn+"'></li>").appendTo($("#location"));
+
+});
+
+
+// 选择了新的营业执照图片
+$("#licence").change(function(){
+	var objUrl = getObjectURL(this.files[0]) ;
+	if (objUrl) {
+		$("#imgfile").remove();
+        $("<img id='imgfile' src='"+objUrl+"'>").appendTo($(".imgboderp"))
+	}
+    upladFile();
+}) ;
+
+$("#service .country").change(function(){
+
+    var country = $("#service .country").find("option:selected").text();
+    // 判断是否已经选择
+    if(country=="请选择国家"){
+        return false;
+    }
+    // 不能重复添加国家
+    if($(".cshangjbj2fuwu").text().indexOf(country)==-1){
+        var li_list = $(".cshangjbj2fuwu li").length;
+        if (country == "请选择国家")
+            return false;
+        var countryid = $("#service .country").val();
+        var country_cn = $("#service .country option:selected").text();
+        $("<li><a href='javascript:void(0)'>"+country+"<span></span></a><input type='hidden' name='service' id='country_"+li_list+"' value='"+countryid+"'></li>").appendTo($(".cshangjbj2fuwu"));
+        $("<input type='hidden' name='service_cn' value='"+country_cn+"'>").appendTo($("#country_"+li_list).parent());
+    }
+    else{
+        alert("不可重复添加！");
+    }
+});
+});
+
+// 删除城市按钮
+$(".cshangjbj2fuwu").on("click", "li", function(){
+    this.remove();
+});
+
+//建立一個可存取到該file的url
+function getObjectURL(file) {
+	var url = null ;
+	if (window.createObjectURL!=undefined) { // basic
+		url = window.createObjectURL(file) ;
+	} else if (window.URL!=undefined) { // mozilla(firefox)
+		url = window.URL.createObjectURL(file) ;
+	} else if (window.webkitURL!=undefined) { // webkit or chrome
+		url = window.webkitURL.createObjectURL(file) ;
+	}
+	return url ;
+}
+
+// 密码输入检测
+function checkpwd(){
+    var password=document.getElementById("pwd");
+    var repassword=document.getElementById("repwd");
+		if(password.value.length < 8 || password.value.length > 20) {
+        password.setCustomValidity("密码长度错误");
+				return false;
+		}
+    if(password.value!=repassword.value){
+        repassword.setCustomValidity("密码不一致!");
+        return false;
+    }
+    repassword.setCustomValidity("");
+    return true;
+}
+
+// 图片上传
+function upladFile() {
+    var fileObj = document.getElementById("licence").files[0]; // 获取文件对象
+    var FileController = "/auth/upload/licence";                    // 接收上传文件的后台地址
+    // FormData 对象
+    var form = new FormData();
+{#    form.append("author", "hooyes");                        // 可以增加表单数据#}
+    form.append("file", fileObj);                           // 文件对象
+    // XMLHttpRequest 对象
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", FileController, false);
+    xhr.onload = function () {
+{#        alert("图片上传完成!");#}
+    };
+    xhr.send(form);
+    if (xhr.status == 200){
+        var x = xhr.responseText;
+        if (x != "")
+            alert(xhr.responseText);
+    }
+}
+</script>
+</head>
+<body>
+<div class="cheader">
+	<div class="cmain">
+		<div class="cheaderz"><a href="/order">
+<img src="{{ url_for('static', filename='images/logo.gif') }}"></a></div>
+	</div>
+</div>
+<div class="height20"></div>
+<div class="cmain">
+    <form action="{{ url_for('auth.zhuce') }}" method="post">
+	<div class="czhuce1">
+		<div class="czhuce11"><span>商家注册</span><a href="{{ url_for('auth.login') }}">已有账号，立即登录</a></div>
+		<div class="czhuce12">
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td width="85">登录邮箱</td>
+					<td><p><input type="email" name="email" required placeholder="请输入邮箱"></p></td>
+				</tr>
+				<tr>
+					<td width="85">密码</td>
+					<td><p><input type="password" id='pwd' name='pwd' required pattern="[A-z][A-z0-9]{5,19}" placeholder="请输入密码（8－20位，以字母开头）"></p></td>
+				</tr>
+				<tr>
+					<td width="85">确认密码</td>
+					<td><p><input type="password" id='repwd' name="repwd" required oninput="checkpwd()" placeholder="请确认密码"></p></td>
+				</tr>
+				<tr>
+					<td width="85">电话</td>
+					<td><p><input type="text" name='phone' required placeholder="请输入电话号码"></p></td>
+				</tr>
+			</table>
+            <div class="errmessage">
+                {{ message }}
+            </div>
+		</div>
+	</div>
+	<div class="height0"></div>
+	<div class="czhuce1">
+		<div class="cshangjbj2">
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tr valign="top">
+					<td width="85">营业执照</td>
+{#                    <form id="imgupload" enctype="multipart/form-data">#}
+					<td><p class="shangcutp">
+                        <input id="licence" name="licence" required type="file">
+                    </p><!-- <div class="cue">(请确认图片名称为英文)</div> --></td>
+{#                    </form>#}
+				</tr>
+				<tr valign="top">
+					<td width="85"></td>
+					<td><p class="imgboderp" id="preview">
+
+                    </p></td>
+				</tr>
+				<tr valign="top">
+					<td width="85">公司名称</td>
+					<td><div class="cshangjbj2in">
+							<input type="text" id='company' name='company' placeholder="请输入公司名称">
+						</div></td>
+				</tr>
+				<tr valign="top">
+					<td width="85">服务商所在地</td>
+					<td><div class="cshangjbj2in" id="location">
+                            <select class="continent">
+
+                            </select>
+                            <select class="country">
+                                <option>请选择城国家</option>
+                            </select>
+                            <select class="city" style="display:none;">
+                                <option>请选择城市</option>
+                            </select>
+						</div></td>
+				</tr>
+				<tr valign="top">
+					<td width="85">可服务地区</td>
+					<td><div class="cshangjbj2in" id='service'>
+                            <select class="continent">
+
+                            </select>
+                            <select class="country">
+                                <option>请选择城国家</option>
+                            </select>
+                            <select class="city" style="display:none;">
+                                <option>请选择城市</option>
+                            </select>
+						</div></td>
+				</tr>
+				<tr valign="top">
+					<td width="85"></td>
+					<td><div class="cshangjbj2fuwu">
+						</div></td>
+				</tr>
+				<tr valign="top">
+					<td colspan="2">可服务的出行主题<i></i></td>
+				</tr>
+				<tr valign="top">
+					<td></td>
+					<td>
+							<div class="cshangjbj2li">
+								{% for topic in topics %}
+								<li>
+									<input type="checkbox" name="topic" value="{{ loop.index }}" id="CheckboxGroup1_{{ loop.index }}">
+									<label for="CheckboxGroup1_{{ loop.index }}">{{ topic }}</label>
+								</li>
+								{% endfor %}
+							</div>
+					</td>
+				</tr>
+				<tr valign="top">
+					<td width="85">商家简介</td>
+					<td><textarea onFocus="this.value=''" onBlur="if(!value){value=defaultValue;}" id="introdece" name="introduce">请输入商家简介...</textarea></td>
+				</tr>
+				<tr valign="top">
+					<td width="85"></td>
+					<td><button type="submit" class="cshangjbj2but">注册</button></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+    </form>
+</div>
+</body>
+</html>

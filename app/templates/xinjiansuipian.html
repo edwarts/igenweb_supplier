@@ -1,0 +1,224 @@
+{% extends 'layout.html' %}
+{% block title %}新建碎片{% endblock %}
+
+{% block content %}
+<div class="cdingdgy">
+	<div class="cdingdgy2">
+		<form action="" method="post" enctype="multipart/form-data">
+			<div class="cdingdgy21">
+				<div class="cdingdgy211">
+					<h3>新建碎片</h3>
+				</div>
+				<div class="cshachsp">
+					<div class="cshachspt">中文名称</div>
+					<div class="cshachspc"><input type="text" name="name_cn" id="name_cn" required class="cshachspcin" placeholder="请输入..."></div>
+					<div class="cshachspt">英文名称</div>
+					<div class="cshachspc"><input type="text" name="name_en" id="name_en" required class="cshachspcin" placeholder="请输入..."></div>
+					<div class="cshachspt">选择POI类型及从属</div>
+					<div class="cshachspc">
+						<div class="cshachspc3">
+							<dl class="retrie">
+								<dt><input type="text" id="suipiantype" name="suipiantype" readonly="readonly" placeholder="碎片类型"><a id="suipiantypearea" href="javascript:;" readonly="readonly" ></a></dt>
+								<dt><input type="text" id="continent" name="continent" readonly="readonly" placeholder="所在洲"><a id="continentarea" href="javascript:;"></a></dt>
+								<dt><input type="text" id="country" name="country" readonly="readonly" placeholder="请输入国家"><a id="countryarea" href="javascript:;"></a></dt>
+								<dt><input type="text" id="city" name="city" readonly="readonly" placeholder="请输入城市"><a id="cityarea" href="javascript:;"></a></dt>
+
+								<dd class="retriearea"> 
+								<ul class="retrieslide downlist"> 
+									<li><a href="#">不限</a></li> 
+									<li><a href="#">景点</a></li>
+									<li><a href="#">酒店</a></li>
+									<li><a href="#">活动</a></li>
+									<li><a href="#">餐馆</a></li>
+									<li><a href="#">购物</a></li>
+								</ul> 
+								</dd>
+								<dd class="retriearea2"> 
+								<ul class="retrieslide downlist" id="continentlist">
+								</ul>
+								</dd> 
+								<dd class="retriearea3"> 
+								<ul class="retrieslide downlist" id="countrylist">
+
+								</ul> 
+								</dd> 
+								<dd class="retriearea4"> 
+								<ul class="retrieslide downlist" id="citylist">
+
+								</ul> 
+								</dd> 
+							</dl> 
+						</div>
+					</div>
+
+					<div class="cshachspt">参考网址：www.igenwo.com</div>
+					<div class="cshachspt">价格</div>
+					<div class="cshachspc"><input type="text" id="price" name="price" required class="cshachspcin" placeholder="请输入..."></div>
+					<div class="cshachspt">介绍</div>
+					<div class="cshachspc"><textarea onFocus="this.value=''" id="description" name="description" required onBlur="if(!value){value=defaultValue;}">请输入...</textarea></div>
+					<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='images/jquery.masterblaster.css') }}">
+					<div class="cshachspt">标签</div>
+					<div class="cshachspc3" id="cshachspc3">
+						<input id="tags" name="tags" placeholder=" "/>
+					</div>
+					<div class="cshachspt">目的地图片<span>（不低于900像素*600像素，可以多传，建议越多越好，选中照片设为封面）</span></div>
+					<div class="cshachspc1">
+						<p>你还没有上传目的地图片</p>
+					</div>
+					<div class="cshachspc2"><p class="cshachspc2p"><input id="suipianimg" name="suipianimg" type="file" multiple></p></div>
+				</div>
+			</div>
+			<div class="cdingdgy22" style="width:700px">
+				<li class="cdingdgy22li1" onclick="pieceSubmit();"><button>确定</button></li>
+				<li class="cdingdgy22li2"><button>取消</button></li>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}
+{% block js %}
+<script type="text/javascript" src="{{ url_for('static', filename='images/jquery.masterblaster.js') }}"></script>
+<script type="text/javascript" src="http://ditu.google.cn/maps/api/js?key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $.ajax({
+        url:'{{ url_for('auth.getcontinent') }}',
+        datatype:"json",
+        success:function(data) {
+            var data = eval(data);
+{#            $("<option>请选择所在洲</option>").appendTo($("#continent"));#}
+            for(var i=0;i<data.length;i++) {
+                $("<li><a href='javascript:void(0)' name='"+data[i].continentid+"'>"+data[i].continentname_cn+"</a></li>").appendTo("#continentlist");
+            }
+        }
+    });
+
+    $("#continent").change(function(){
+        var contentinentid = $("#continent").val();
+        $.ajax({
+            url:'{{ url_for('auth.getcountry') }}',
+            data:{id:contentinentid},
+            datatype:"json",
+            success:function(data){
+                var data = eval(data);
+                $("#country option").remove();
+                $("<option>请选择国家</option>").appendTo($("#country"));
+                for(var i=0;i<data.length;i++) {
+                    $("<option value="+data[i].countryid+">"+data[i].countryname_cn+"</option>").appendTo($("#country"));
+                }
+            }
+        })
+    });
+
+    $("#country").change(function(){
+        var countryid = $("#country").val();
+        $.ajax({
+            url:'{{ url_for('auth.getcity') }}',
+            data:{id:countryid},
+            datatype:"json",
+            success:function(data){
+                var data = eval(data);
+                $("#city option").remove();
+                $("<option>请选择城市</option>").appendTo($("#city"));
+                for(var i=0;i<data.length;i++) {
+                    $("<option value="+data[i].cityid+">"+data[i].cityname_cn+"</option>").appendTo($("#city"));
+                }
+            }
+        })
+    });
+    $("#suipianimg").change(function(){
+        if ($(".cshachspc1 p")) {
+            $(".cshachspc1 p").remove();
+        }
+        if ($(".cshachspc1 img")) {
+            $(".cshachspc1 img").remove();
+        }
+        var objUrl;
+        for (var i=0; i<this.files.length;i++) {
+            objUrl = getObjectURL(this.files[i]) ;
+            if (objUrl) {
+                $("<img id='img_1' src='"+objUrl+"'>").appendTo($(".cshachspc1")) ;
+            }
+        }
+        var path = "/auth/uploads/pieceimg"
+        // upladFiles(path);
+    });
+    //$("[id*='img_']").click(function(){
+    $(".cshachspc1").on('click', 'img', function(){
+        var obj = this;
+        $(".cshachspc1 img").css('border', "");
+        $(this).css("border", "2px solid #666666");
+    });
+});
+</script>
+<script type="text/javascript">
+$(function(){ 
+	$('.retrie dt a').click(function(){
+		var $t=$(this);
+		if($t.hasClass('up')){
+			$(".retrie dt a").removeClass('up');
+			$('.downlist').hide();
+		}else{
+			$(".retrie dt a").removeClass('up');
+			$('.downlist').hide();
+			$t.addClass('up');
+			$('.downlist').eq($(".retrie dt a").index($(this)[0])).show();
+		}
+	});
+	$(".retriearea ul li a:contains('"+$('#suipiantypearea').text()+"')").addClass('selected');
+	$(".retriearea2 ul li a:contains('"+$('#continentarea').text()+"')").addClass('selected');
+	$(".retriearea3 ul li a:contains('"+$('#countryarea').text()+"')").addClass('selected');
+	$(".retriearea4 ul li a:contains('"+$('#cityarea').text()+"')").addClass('selected');
+	
+	$(".retriearea a").click(function(){
+  		$("#suipiantype").val($(this).text());
+		$("#suipiantypearea").removeClass('up');
+		$('.downlist').hide();
+	});
+    $(".retriearea2").on('click', 'a', function(){
+  		$("#continent").val($(this).text());
+		$("#continentarea").removeClass('up');
+		$('.downlist').hide();
+        var contentinentid = $(this).attr('name');
+        $.ajax({
+            url:'{{ url_for('auth.getcountry') }}',
+            data:{id:contentinentid},
+            datatype:"json",
+            success:function(data){
+                var data = eval(data);
+                $("#countrylist li").remove();
+                for(var i=0;i<data.length;i++) {
+                    $("<li><a href='javascript:void(0)' name='"+data[i].countryid+"'>"+data[i].countryname_cn+"</a></li>").appendTo($("#countrylist"));
+                }
+            }
+        })
+	});
+    $(".retriearea3").on('click', 'a', function(){
+  		$("#country").val($(this).text());
+		$("#countryarea").removeClass('up');
+		$('.downlist').hide();
+        var countryid = $(this).attr('name');
+        $.ajax({
+            url:'{{ url_for('auth.getcity') }}',
+            data:{id:countryid},
+            datatype:"json",
+            success:function(data){
+                var data = eval(data);
+                $("#citylist li").remove();
+                for(var i=0;i<data.length;i++) {
+                    $("<li><a href='javascript:void(0)' name='"+data[i].cityid+"'>"+data[i].cityname_cn+"</a></li>").appendTo($("#citylist"));
+                }
+            }
+        })
+	});
+    $(".retriearea4").on('click', 'a', function(){
+  		$("#city").val($(this).text());
+		$("#cityarea").removeClass('up');
+		$('.downlist').hide();
+	});
+	$("#tags").masterblaster({
+		animate:true
+	});
+});
+</script>
+{% endblock %}

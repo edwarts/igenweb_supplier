@@ -1,0 +1,260 @@
+{% extends "layout.html" %}
+{% block title %}创建路线{% endblock %} 
+{% block css %} 
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='images/jquery.datetimepicker.css') }}"/>
+{% endblock %}
+{% block content %}
+<div class="cdingdgy">
+	<div class="cdingdgy1">
+		<div class="chuangjlx">
+			<div class="chuangjlxz">
+				<li class="a"><a href="#">基础信息</a></li>
+			</div>
+		</div>
+		<form action="/auth/create" method="post">
+			<div class="chuangjlxc">
+				<div class="chuangjlxc2">
+					<div class="route_status clearfix">
+					<div class="cshachspt">路线标题</div>
+					<div class="cshachspc"><input id="title" name="title" type="text" required class="cshachspcin" placeholder="为订单设计的路线，标题规范：【用户名称】专属定制【目的地】【天数】旅行路线"></div>
+					<div class="cshachspt">上传封面图片<span>（(不低于：900像素*600像素））</span></div>
+					<div class="cshachspc4">
+						<div class="cshachspc4z"><img id="coverview" name="coverview" src="http://p.igenwo.com/{{ url_for('static', filename='images/default.gif') }}"></div>
+						<div class="cshachspc4y"><p class="cshachspc3p"><input id="cover" name="cover" type="file"></p></div>
+						<input id='cover_url' style='display:none'>
+					</div>
+					<div class="cshachspt">行程起止时间<span>（旅行天数将由此自动生成）</span></div>
+					<div class="cshachspc5">
+						<table width="47%" border="0" cellpadding="5" cellspacing="0" bordercolor="#ddd;">
+							<tr>
+								<td width="50%">出发日期：<input style="text-align:center;" name="begin" type="text" required placeholder="填写日期" id="datetimepicker1"/></td>
+								<td width="50%">返程日期：<input style="text-align:center;" name="end" type="text" required placeholder="填写日期" id="datetimepicker2"/></td>
+							</tr>
+						</table>
+					</div>
+
+					<div class="hr" style="margin:10px 0px;border-bottom:1px dashed #cecece;width:95%;"></div>
+
+					<div class="trip_star">
+						<div class="lightdes_json" style="display:none;">
+							<input type="text" name="lightdes_json">
+						</div>
+						<div class="chuangjlxc4z chuangjlxc4z_xc">
+								<li class="a light-tab" data-id="light_tab_0" id="light_tab_0"><a href="javascript:void(0)">旅行亮点</a><span class="close" title="删除该条亮点"></span></li>
+								<li class="add" title="新增亮点"><a href="javascript:void(0)">新增亮点</a></li><br>
+							<ul class="trip_star" id='light_0'>
+								<li class='title-input-li'>亮点标题<input class='title-input-in'></li>
+								<div class="cshachspt">体验亮点描述</div>
+								<div class="cshachspc4">
+									<textarea id="lightdes" name="lightdes"></textarea>
+								</div>
+								<div class="cshachspt">上传亮点图片<span>（(不低于：900像素*600像素））</span></div>
+								<div class="cshachspc4">
+									<div class="cshachspc4z">
+										<img class="lightview" name="lightview" src="http://p.igenwo.com/{{ url_for('static', filename='images/default.gif') }}">
+									<div class="cshachspc4y">
+										<p class="cshachspc3p">
+										<input class='light_img' id="light_img_0" name="light" type="file">
+										<input class='light_img_url' style="display:none">
+										</p>
+									</div>
+								</div>
+							</ul>
+						</div>
+					</div>
+					<div class="cshachspc6">
+						<a href="javascript:void(0)" id='submit'>下一步</a>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="{{ url_for('static', filename='images/jquery.datetimepicker.js') }}"></script>
+<script type="text/javascript">
+$('[id*=datetimepicker]').datetimepicker({
+	yearOffset:0,
+	lang:'ch',
+	timepicker:false,
+	format:'Y-m-d',
+	formatDate:'Y/m/d',
+	minDate:'+1970/01/02', // yesterday is minimum date
+	maxDate:'+1980/01/02' // and tommorow is maximum date calendar
+});
+var count = 0;
+$(document).ready(function(){
+	$('#light_0 .title-input-in').val('旅行亮点');
+	$('#light_0 .title-input-in').on('input change', function () {
+		$('#light_tab_0 a').text($('#light_0 .title-input-in').val());
+	});
+    $("#cover").change(function(){
+        var objUrl = getObjectURL(this.files[0]) ;
+        if (objUrl) {
+            $("#coverview").attr("src", objUrl) ;
+        }
+        upladFile("cover");
+    });
+
+    // 亮点图片上传
+    $(".chuangjlxc4z_xc").on('change', '.light_img', function(){
+    	var n=$(this).parents('ul').attr('id').split('_')[1];
+    	// 得到该亮点的序号
+    	var objUrl = getObjectURL(this.files[0]);
+			$('#light_'+n+' .lightview').attr('src', objUrl);
+    	uploadFile("light_img_"+n, n, this.files[0].name);
+    });
+
+	});
+	// 新增亮点
+$(".add").click(function () {
+	var n = $('.light-tab').length;
+	if( n < count) {
+		n = count+1;
+	}
+	str = '<ul style="display:none" class="trip_star" id="light_' + n +'">'
+	str = str + '<li class="title-input-li">亮点标题<input class="title-input-in"></li>'
+	str = str + '<div class="cshachspt">体验亮点描述</div>'
+	str = str + '<div class="cshachspc4">'
+	str = str + '<textarea id="lightdes" name="lightdes"></textarea>'
+	str = str + '</div>'
+	str = str + '<div class="cshachspt">上传亮点图片<span>（(不低于：900像素*600像素））</span></div>'
+	str = str + '<div class="cshachspc4">'
+	str = str + '<div class="cshachspc4z">'
+	str = str + '<img class="lightview" name="lightview" src="http://p.igenwo.com/{{ url_for("static", filename="images/default.gif") }}">'
+	str = str + '<div class="cshachspc4y">'
+	str = str + '<p class="cshachspc3p">'
+	str = str + '<input class="light_img" id="light_img_'+n+'" name="light" type="file" required="">'
+	str = str + '<input class="light_img_url" style="display:none">'
+	str = str + '</p>'
+	str = str + '</div>'
+	str = str + '</div>'
+	str = str + '</ul>'
+	$(".chuangjlxc4z_xc").append(str);
+	str = '<li class="a light-tab" data-id="light_tab_0" id="light_tab_'+ n +'">'
+	str = str + '<a href="javascript:void(0)">旅行亮点</a><span class="close" title="删除该条亮点"></span></li>'
+	$(".add").before(str);
+	$(".light-tab").removeClass("a");
+	$("#light_tab_"+n).addClass('a');
+	$('#light_'+n+' .title-input-in').val('旅行亮点');
+	$('#light_'+n+' .title-input-in').on('input change', function () {
+		$('#light_tab_'+n+' a').text($('#light_'+n+' .title-input-in').val());
+	});
+	$(".chuangjlxc4z_xc ul").hide();
+	$("#light_"+n).show();
+	count = count + 1;
+});
+// 亮点删除
+$(".chuangjlxc4z_xc").on("click","span.close",function(){
+	// 不可删除唯一亮点
+	if($(".light-tab").length>1){
+		if(confirm("确定删除该条亮点吗？")){
+			n = $(this).parent().attr('id').split('_')[2];
+			$(this).parent().remove();
+			$("#light_"+n).remove();
+			if($(this).parent().hasClass('a')) {
+				$(".light-tab").first().addClass('a');
+				$(".chuangjlxc4z_xc ul").first().show();
+			}
+			return false;
+		}
+	}else{
+		alert("至少需要一个亮点！");
+	}
+});
+//切换亮点
+$('.chuangjlxc4z_xc').on('click', '.light-tab', function () {
+	n = $(this).attr('id').split('_')[2];
+	$(".light-tab").removeClass("a");
+	$("#light_tab_"+n).addClass('a');
+	$(".chuangjlxc4z_xc ul").hide();
+	$("#light_"+n).show();
+});
+
+// 再次切换到行程信息功能
+$("#submit").click(function(event) {
+	data= {};
+	data['title'] = $('#title').val();
+	data['coverimg'] = $('#cover_url').val();
+	data['start_date'] = $('#datetimepicker1').val();
+	data['end_date'] = $('#datetimepicker2').val();
+	data['light'] = []
+	for(i=0;i<$('.chuangjlxc4z_xc ul').length;i++){
+		light_title = $('.chuangjlxc4z_xc ul').eq(i).find('.title-input-in').val();
+		light_des = $('.chuangjlxc4z_xc ul').eq(i).find('textarea').val();
+		light_img = $('.chuangjlxc4z_xc ul').eq(i).find('.light_img_url').val();
+		data['light'].push({'light_title': light_title, 'light_des': light_des, 'light_img': light_img});
+	}
+	data['light'] = JSON.stringify(data['light']);
+	$.ajax({
+		type: "POST",
+		url: '/itinerary/create',
+		data: data,
+		dataType: 'json',
+		success: function (res) {
+			console.log(res);
+			window.location.href = res.url;
+		}
+	});
+	return false
+});
+
+//建立一個可存取到該file的url
+function getObjectURL(file) {
+	var url = null ;
+	if (window.createObjectURL!=undefined) { // basic
+		url = window.createObjectURL(file) ;
+	} else if (window.URL!=undefined) { // mozilla(firefox)
+		url = window.URL.createObjectURL(file) ;
+	} else if (window.webkitURL!=undefined) { // webkit or chrome
+		url = window.webkitURL.createObjectURL(file) ;
+	}
+	return url ;
+}
+function uploadFile(str,n,name="") {
+    var fileObj = document.getElementById(str).files[0]; // 获取文件对象*/
+    var FileController = "/auth/upload1/light";                    // 接收上传文件的后台地址
+    // FormData 对象
+    var form = new FormData();
+    form.append("file", fileObj);                           // 文件对象
+    // XMLHttpRequest 对象
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", FileController, true);
+    xhr.onload = function (data) {
+    	
+    };
+    xhr.send(form);
+    xhr.onreadystatechange = function () {
+ 		if (xhr.readyState==4 && xhr.status ==200) {
+			if(xhr.responseText != 'error') {
+				$("#light_"+n+" .light_img_url").val("/static/upload/light/"+xhr.responseText)
+			}
+			else {
+				alert('图片格式错误');
+			}
+ 		}
+ 	};
+}
+function upladFile(str,li=0,name="") {
+    var fileObj = document.getElementById(str).files[0]; // 获取文件对象*/
+    var FileController = "/auth/upload1/"+str;                    // 接收上传文件的后台地址
+    // FormData 对象
+    var form = new FormData();
+{#    form.append("author", "hooyes");                        // 可以增加表单数据#}
+    form.append("file", fileObj);                           // 文件对象
+    // XMLHttpRequest 对象
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", FileController, true);
+    xhr.onload = function (data) {
+    	
+    };
+    xhr.send(form);
+    xhr.onreadystatechange = function () {
+ 		if (xhr.readyState==4 && xhr.status ==200) {
+			$("#cover_url").val("/static/upload/cover/"+xhr.responseText)
+ 		}
+ 	};
+}
+</script>
+{% endblock %}

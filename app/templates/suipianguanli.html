@@ -1,0 +1,428 @@
+{% extends 'layout.html' %}
+{% block title %}碎片管理{% endblock %}
+
+{% block content %}
+<div class="suipianrim">
+	<div class="cdingdgy1">
+		<div class="chuangjlx" style="padding-bottom:10px;">
+			<div class="chuangjlx_sp">
+				<div class="chuangjlx_spz" style="display:none;">
+					<div class="nice-select" name="nice-select">
+
+					</div>
+				</div>
+				<div class="chuangjlx_spzz" style="margin-left:20px;">
+					<div>
+						<input type="text" placeholder="输入关键词" class="search_text"><button class="search_btn"></button>
+					</div>
+				</div>
+				<div class="chuangjlxc4y"><a href="{{ url_for('auth.createsuipian') }}" style="margin-right:10px;">新增碎片</a></div>
+			</div>
+		</div>
+		<div class="chuangjlxc4" style="display:none;">
+			<div class="chuangjlxc4z" >
+				<ul id="suipian" >
+					<li class="a" onclick="nTabs1(this, 0)"><a href="#">我的</a></li>
+					<!-- <li class="n" onclick="nTabs1(this, 0)"><a href="#">全部</a></li>
+			 <li class="n" onclick="nTabs1(this, 1)"><a href="#">景点</a></li>
+			 <li class="n" onclick="nTabs1(this, 2)"><a href="#">活动</a></li>
+			 <li class="n" onclick="nTabs1(this, 3)"><a href="#">餐馆</a></li>
+			 <li class="n" onclick="nTabs1(this, 4)"><a href="#">酒店</a></li>
+			 <li class="n" onclick="nTabs1(this, 5)"><a href="#">购物</a></li> -->
+				</ul>
+			</div>
+		</div>
+		<div class="chuangjlxc5">
+			<div id="cpcjxcbotzy_0">
+
+			</div>
+			<div id="cpcjxcbotzy_1" class="none">
+
+			</div>
+			<div id="cpcjxcbotzy_2" class="none">
+
+			</div>
+			<div id="cpcjxcbotzy_3" class="none">
+
+			</div>
+			<div id="cpcjxcbotzy_4" class="none">
+
+			</div>
+			<div id="cpcjxcbotzy_5" class="none">
+
+			</div>
+			<input type='hidden' id='getmore_count' name="getmore_count" value='1'/>
+			<div class="jiazaimore"><a href="#" id="getmore">加载更多</a></div>
+		</div>
+	</div>
+	<div class="suipidel" id="suipidel">
+		<div class="suipidel1">
+			<div class="suipidel1z">
+				<h2>大皇宫</h2>
+				<h4>The Grand Palace</h4>
+			</div>
+			<div class="suipidel1y">
+				<span>0</span>元起
+			</div>
+			<span class="suipidel1sp"><img src="/static/images/xx.gif"></span>
+		</div>
+		<div class="suipidel2">
+			<div class="suipidel2z">
+				<div class="suipidel2z1">
+					<div id="slideBox" class="slideBox">
+						<div class="hd">
+							<ul><li></li><li></li><li></li></ul>
+						</div>
+						<div class="bd">
+							<ul>
+								<li><a href="#"><img src="http://p.igenwo.com/static/image/Thailand/Bangkok/1a794f2124994be712defef40b17d439.jpg" /></a></li>
+							</ul>
+						</div>
+						<a class="prev" href="javascript:void(0)"></a>
+						<a class="next" href="javascript:void(0)"></a>
+					</div>
+				</div>
+				<div class="suipidel2z2">
+					<span>12412次浏览</span><em>21件已销售</em>
+				</div>
+				<div class="suipidel2z3">
+					<div class="suipidel2z3t"><img src="/static/images/sp1.gif">景点简介</div>
+					<div class="suipidel2z3c">
+						大皇宫（又名大王宫），位于曼谷市中心，紧靠湄南河，是曼谷王朝的象征，是旅游者去泰国的首选之地。紧偎湄南河，由一组布局错落的建筑群组成，是暹逻式风格，汇集了泰国绘画、雕刻和装饰艺术的精华。它有点像中国的故宫一样，是泰国曼谷王朝一世至八世的王宫...
+					</div>
+				</div>
+				<div class="suipidel2z4">
+					<li><span><img src="/static/images/sp2.gif">地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址：</span><em>Na Phra Lan Rd, Phra Nakhon, Bangkok, 10200</em></li>
+					<li><span><img src="/static/images/sp3.gif">时&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;间：</span><em>每天8:30-16:30，午间不休，15:30后停止进入</em></li>
+					<li><span><img src="/static/images/sp4.gif">门&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;票：</span><em>96</em></li>
+					<li><span><img src="/static/images/sp5.gif">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话：</span><em></em></li>
+					<li><span><img src="/static/images/sp6.gif">参考网址：</span><em>www.igenwo.com</em></li>
+				</div>
+			</div>
+			<div class="suipidel2y">
+				<div id="drag" style="height:600px">
+					<div id="allmap" style="width:480px;height:600px;"></div>
+				</div>
+			</div>
+		</div>
+		<div class="suipidel3">
+			<li class="suipidel3li1"><button type="button">编辑</button></li>
+			<li class="suipidel3li2"><button type="button">删除</button></li>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+
+
+{% block js %}
+<!--<script src="http://ditu.google.cn/maps/api/js?key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false"></script>-->
+<script src="{{ url_for('static', filename='images/huadong.js') }}"></script>
+<script type="text/javascript" src="/static/images/webd9_slide.js"></script>
+					<script type="text/javascript">
+$(".slideBox").slide({mainCell:".bd ul",autoPlay:true,interTime:4500});
+					</script>
+<script id="citytmpl" type="text/x-jquery-tmpl">
+    <input id='${cityid}' name='city' value='${cityname_cn}' readonly='readonly' type='text'>
+    <ul id='citylist' style='display: none;'></ul>
+</script>
+<script id="citylisttmpl" type="text/x-jquery-tmpl">
+    <li id='${cityid}'>${cityname_cn}</li>
+</script>
+<script id="piecelisttmpl" type="text/x-jquery-tmpl">
+    <div class='chuangjlxc5d'>
+        <div class='chuangjlxc5d1'><img src='/static/${cover}'></div>
+        <div class='chuangjlxc5d2'>
+            <input type="hidden" name="pieceid" value="${id}" />
+            <h3>${name_cn}</h3>
+            <h4>${title}</h4>
+            <h5><span>时长：1.51小时</span><em><i>${price}</i> 元起</em></h5>
+        </div>
+	</div>
+</script>
+<script id="suipideltmpl" type="text/x-jquery-tmpl">
+    <div class="suipidel1">
+        <div class="suipidel1z">
+            <h2>${name_cn}</h2>
+            <h4>${name_en}</h4>
+        </div>
+        <div class="suipidel1y">
+            <span>${price}</span>元起
+        </div>
+        <span class="suipidel1sp"><img src="/static/images/xx.gif"></span>
+    </div>
+    <div class="suipidel2">
+        <div class="suipidel2z">
+            <div class="suipidel2z1">
+                <div id="slideBox" class="slideBox">
+                    <div class="hd">
+
+                    </div>
+                    <div class="bd">
+                        <ul>
+						    <li><a href="#"><img src="/static/${cover}" /></a></li>
+					    </ul>
+				    </div>
+				    <a class="prev" href="javascript:void(0)"></a>
+				    <a class="next" href="javascript:void(0)"></a>
+			    </div>
+		    </div>
+		    <div class="suipidel2z2">
+			    <span>12412次浏览</span><em>21件已销售</em>
+		    </div>
+		    <div class="suipidel2z3">
+			    <div class="suipidel2z3t"><img src="/static/images/sp1.gif">景点简介</div>
+			    <div class="suipidel2z3c">
+				    ${description}
+			    </div>
+		    </div>
+		    <div class="suipidel2z4">
+			    <li><span><img src="/static/images/sp2.gif">地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址：</span><em>${address}</em></li>
+			    <li><span><img src="/static/images/sp3.gif">时&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;间：</span><em>${period}</em></li>
+			    <li><span><img src="/static/images/sp4.gif">门&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;票：</span><em>${ticket}</em></li>
+			    <li><span><img src="/static/images/sp5.gif">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话：</span><em>${tel}</em></li>
+			    <li><span><img src="/static/images/sp6.gif">参考网址：</span><em>${url}</em></li>
+		    </div>
+	    </div>
+	    <div class="suipidel2y">
+		    <div id="drag" style="height:600px">
+			    <div id="allmap" style="width:480px;height:600px;"></div>
+		    </div>
+	    </div>
+    </div>
+    <div class="suipidel3">
+	    <li class="suipidel3li1"><button type="button">编辑</button></li>
+	    <li class="suipidel3li2"><button type="button">删除</button></li>
+    </div>
+</script>
+<script id="suipidel2ztmpl" type="text/x-jquery-tmpl">
+    <div class="suipidel2z">
+        <div class="suipidel2z1">
+            <div id="slideBox" class="slideBox">
+                <div class="hd">
+                    <ul><li></li><li></li><li></li></ul>
+				</div>
+				<div class="bd">
+					<ul>
+						<li><a href="#">
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/j.jpg') }}" /></a></li>
+						<li><a href="#">
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/j.jpg') }}" /></a></li>
+						<li><a href="#">
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/j.jpg') }}" /></a></li>
+					</ul>
+				</div>
+				<a class="prev" href="javascript:void(0)"></a>
+				<a class="next" href="javascript:void(0)"></a>
+			</div>
+		</div>
+		<div class="suipidel2z2">
+			<span>12412次浏览</span><em>21件已销售</em>
+		</div>
+		<div class="suipidel2z3">
+			<div class="suipidel2z3t">
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/sp1.gif') }}">景点简介</div>
+			<div class="suipidel2z3c">
+				位于清迈古城旧市街 PhraPokklao Road 的南端。它因为一座极具视觉冲击的大佛塔而闻名，创建于1411年，在清迈市内六大寺庙中最为著名，它与 帕辛寺 并列为清迈地位最崇高的寺庙。门口点缀着蛇和孔雀的装饰，内部有巨大的佛像。 在正殿的后面是始建于1411年的宏伟四方形大佛塔，以后经过数次增建，高达90米。1545年清迈发生了一次大地震，大佛塔的尖顶一夜之间塌毁，露出了塔内的金身佛像。虽然毁于大地震，但依然是清迈城内最宏伟的建筑。
+			</div>
+		</div>
+		<div class="suipidel2z4">
+			<li><span>
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/sp2.gif') }}">地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址：</span><em>Tha Phae Road, Chiang Mai, 50300, Thailand</em></li>
+			<li><span>
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/sp3.gif') }}">时&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;间：</span><em>周一~周日 6:00-18:00</em></li>
+			<li><span>
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/sp4.gif') }}">门&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;票：</span><em>免票</em></li>
+			<li><span>
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/sp5.gif') }}">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话：</span><em>+66 53 276 140</em></li>
+			<li><span>
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/sp6.gif') }}">参考网址：</span><em>www.igenwo.com</em></li>
+		</div>
+	</div>
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+    	// 搜索我的碎片功能
+    	$("button.search_btn").click(function(event) {
+    		var search_text=$(this).prev().val();
+    		if(search_text){
+    			$.post("后端搜索我的功能接口",{search_text:search_text},function(data){
+    				var data = eval(data);
+    				var piecelist = data[0].piecelist;
+    				$("#piecelisttmpl").tmpl(piecelist).html("#cpcjxcbotzy_0");
+    			});
+    		}
+    	});
+
+    	// 页面进入时获取的碎片
+        $.ajax({
+            url:'/getmypiece',
+            datatype:"json",
+            success:function(data) {
+                var data = eval(data);
+                var citylist = data[0].citylist;
+                var piecelist = data[0].piecelist;
+                $("#citytmpl").tmpl(citylist[0]).appendTo(".nice-select");
+                $("#citylisttmpl").tmpl(citylist).appendTo("#citylist");
+                $("#piecelisttmpl").tmpl(piecelist).appendTo("#cpcjxcbotzy_0");
+            }
+        });
+        $("#getmore").click(function(){
+            var obj = $("#suipian").children("li");
+            var cityid = $("[name='city']")[0].id;
+            var j;
+            for (j=0; j<obj.length; j++) {
+                if (obj[j].className == "a")
+                    break;
+            }
+{#            var temp1 = $("#getmore_count");#}
+{#            var temp = $("#getmore_count").value;#}
+            var getmore_count = parseInt($("#getmore_count")[0].value) + 1;
+            $.ajax({
+                url:'/auth/getcitypiece/'+cityid+'/'+j+'/'+getmore_count,
+                datatype:"json",
+                //data:{id:cityid, type:Num},
+                success:function(data) {
+                    var data = eval(data);
+
+                    for(var i=0;i<data.length;i++) {
+                        //var title = data[i].description.substr(0, 15);
+                        suipian_html = "					<div class='chuangjlxc5d'>\
+                                <div class='chuangjlxc5d1'><img src='/static/"+data[i].cover+"'></div>\
+                                <div class='chuangjlxc5d2'>\
+                                    <input type='hidden' name='pieceid' value='"+data[i].id+"' />\
+                                    <h3>"+data[i].name_cn+"</h3>\
+                                    <h4>"+data[i].description+"</h4>\
+                                    <h5><span>时长：1.52小时</span><em><i>"+data[i].price+"</i>元起</em></h5>\
+                                </div>\
+                                <div class='chuangjlxc5d3'><a href='#'>添加到行程</a></div>\
+                            </div>";
+                        $(suipian_html).appendTo($("#cpcjxcbotzy_"+j));
+                    }
+                    document.getElementById("getmore_count").value = getmore_count;
+                }
+            });
+{#            var tabObj = thisObj.parentNode.id;#}
+{#            var tabList = document.getElementById(tabObj).getElementsByTagName("li");#}
+{#            len = tabList.length;#}
+{#            for(i=0; i <len; i++) {#}
+{#                if (i == Num) {#}
+{#                    thisObj.className = "a";#}
+{#                    document.getElementById("cpcjxcbotzy_"+i).style.display = "block";#}
+{#                } else {#}
+{#                    tabList[i].className = "n";#}
+{#                    document.getElementById("cpcjxcbotzy_"+i).style.display = "none";#}
+{#                }#}
+{#            }#}
+            event.preventDefault();
+        });
+    });
+</script>
+<script>
+$(document).ready(function(){
+    $("[id*='cpcjxcbotzy_']").on('click', 'img', function(){
+        var obj = $(this).parents("[class='chuangjlxc5d']")[0];
+        var temp = obj.getElementsByTagName("h3")[0];
+        var pieceid = obj.getElementsByTagName("input")[0].value;
+        $.ajax({
+            url:'/auth/getpiecebyid/'+pieceid,
+            type:'post',
+            datatype:"json",
+            success:function(data) {
+                data = eval(data);
+                data = data[0].piecelist[0];
+                $(".suipidel").find("[class*='suipidel']").remove();
+                $("#suipideltmpl").tmpl(data).appendTo(".suipidel");
+                $(".suipidel").show(500);
+                var myCenter=new google.maps.LatLng(data.lat,data.lng);
+                var marker;
+
+                var mapProp = {
+                    center:myCenter,
+                    zoom:12,
+                    mapTypeId:google.maps.MapTypeId.ROADMAP
+                };
+
+                var map=new google.maps.Map(document.getElementById("allmap"),mapProp);
+
+                marker=new google.maps.Marker({
+                    position:myCenter,
+                    animation:google.maps.Animation.BOUNCE
+                });
+
+                marker.setMap(map);
+            }
+        });
+	});
+	$("#suipidel").on('click', 'button', function(){
+        //$("#suipidel").find("[class='suipidel1']").remove();
+        //$("#suipidel").find("[class='suipidel2']").remove();
+  		$(".suipidel").hide();
+	});
+    $("#suipidel").on('click', '.suipidel1sp img', function(){
+        //$("#suipidel").find("[class='suipidel1']").remove();
+        //$("#suipidel").find("[class='suipidel2']").remove();
+  		$(".suipidel").hide();
+	});
+});
+
+$(function(){
+	$('[name="nice-select"]').on('click', function(e){
+        $(this).find('ul').show();
+        e.stopPropagation();
+    });
+    $('[name="nice-select"]').on('hover', 'li', function(e){
+        $(this).toggleClass('on');
+        e.stopPropagation();
+    });
+    $('[name="nice-select"]').on('click', 'li', function(e){
+        var val = $(this).text();
+        var cityid = $(this).attr("id");
+        $('[name="nice-select"] input').remove();
+
+        $("<input id='"+cityid+"' name='city' value='"+val+"' readonly='readonly' type='text'>").prependTo($('[name="nice-select"]'));
+        $('[name="nice-select"] ul').hide();
+
+        $.ajax({
+            url:'/auth/getcitypiece/'+cityid,
+            datatype:"json",
+            success:function(data) {
+                var data = eval(data);
+                $("#cpcjxcbotzy_0").find(".chuangjlxc5d").remove();
+                for(var i=0;i<data.length;i++) {
+                    var title = data[i].description.substr(0, 15);
+                    suipian_html = "					<div class='chuangjlxc5d'>\
+                            <div class='chuangjlxc5d1'><img src='/static/"+data[i].cover+"'></div>\
+                            <div class='chuangjlxc5d2'>\
+                                <input type='hidden' name='pieceid' value='"+data[i].id+"' />\
+                                <h3>"+data[i].name_cn+"</h3>\
+                                <h4>"+title+"</h4>\
+                                <h5><span>时长：1.54小时</span><em><i>"+data[i].price+"</i>元起</em></h5>\
+                            </div>\
+                            <div class='chuangjlxc5d3'><a href='#'>添加到行程</a></div>\
+                        </div>";
+                    $(suipian_html).appendTo($("#cpcjxcbotzy_0"));
+                }
+            }
+        });
+
+        var tabList = document.getElementById("suipian").getElementsByTagName("li");
+        len = tabList.length;
+        for(i=0; i <len; i++) {
+            if (i == 0) {
+                tabList[i].className = "a";
+                document.getElementById("cpcjxcbotzy_"+i).style.display = "block";
+            } else {
+                tabList[i].className = "n";
+                document.getElementById("cpcjxcbotzy_"+i).style.display = "none";
+            }
+        }
+        e.stopPropagation();
+    });
+    $(document).click(function(){
+        $('[name="nice-select"] ul').hide();
+    });
+});
+</script>
+{% endblock %}

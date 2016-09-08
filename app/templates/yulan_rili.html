@@ -1,0 +1,202 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>路线管理</title>
+<link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="icon" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='images/style.css') }}" />
+<script type="text/javascript" src="{{ url_for('static', filename='images/jquery.min.js') }}"></script>
+</head>
+<body>
+
+<div class="cheader">
+	<div class="cmain clearfix">
+		<div class="cheaderz">
+            <a href="/order">
+                <img src="http://p.igenwo.com/{{ url_for('static', filename="images/logo.gif") }}">
+            </a>
+        </div>
+        <div class="cheadert">
+            <div class="y loginout_tool"><a href="{{后端退出登录地址}}" id="loginout_btn" style="text-decoration:underline;color:#3692ed">退出</a></div>
+            <div class="y login_name" style="margin-right:5px;">{{当前登录用户名}}</div>
+        </div>
+	</div>
+</div>
+<div class="height20"></div>
+<div class="cmain">
+	<div class="cdingdg">
+		<div class="cdingdgz">
+			<div class="cdingdgzli">
+				<li><a href="/order">订单管理</a></li>
+				<li class="a"><a href="#">创建路线</a></li>
+				<li><a href="{{ url_for('auth.itinerary') }}">路线管理</a></li>
+				<li><a href="{{ url_for('auth.piece') }}">碎片管理</a></li>
+				<li><a href="{{ url_for('auth.index') }}">我的主页</a></li>
+			</div>
+		</div>
+		<div class="cdingdgy">
+			<div class="cdingdgy2">
+				<div class="cyulanr1">
+					<div class="cyulanr1c">
+						<div class="cyulanr1cz">
+							<div class="cyulanr1czz">
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/tx.jpg') }}"></div>
+							<div class="cyulanr1czy">
+								<h3>一匹马赛克的清迈四日游线路</h3>
+								<p>暂无出发日期</p>
+							</div>
+						</div>
+						<div class="cyulanr1cy">
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/view.png') }}"> 10</div>
+					</div>
+				</div>
+				<div class="cyulanr2">
+					<div class="cyulanr2d">
+						<div class="cyulanr2dz">
+							<li><a href="#">标准模式</a></li>
+							<li class="a"><a href="#">日历预览</a></li>
+							<li><a href="#">费用</a></li>
+						</div>
+						<div class="cyulanr2dy">
+							<div class="cyulanr2dyz">
+								<li class="menuPopup" onMouseOver="sw_nav(1,1);" onMouseOut="sw_nav(1,0);">
+									<a id="HandleLI_1" href="javascript:;">分享到</a> 
+									<div id=DisSub_1 class="topfenxiangbox">
+										<div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
+<script>
+window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+									</div> 
+								</li> 
+							</div>
+							<div class="cyulanr2dyy">
+								<li class="cyulanr2dyyli1"><a href="#">导出行程</a></li>
+								<li class="cyulanr2dyyli2"><a href="#">继续编辑</a></li>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="cyulanr3">
+				<table width="100%" cellpadding="0" cellspacing="0" border="1" bordercolor="#ddd">
+				<tr valign="top" class="cyulanr3tr1">
+					<td colspan="2">
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/yi1.gif') }}"></td>
+					<td width="120">
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/yi2.gif') }}"></td>
+					<td width="90">
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/yi3.gif') }}"></td>
+					<td width="200">
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/yi4.gif') }}"></td>
+					<td>
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/yi5.gif') }}"></td>
+				</tr>
+				<tr valign="top">
+					<td width="40" class="cyulanr3_td1"><font>D1</font></td>
+					<td width="150"></td>
+					<td width="150" class="cyulanr3_td3">
+						<p>成都<span>ChengDu</span></p>
+						<p>清迈<span>QingMai</span></p>
+					</td>
+					<td width="130" class="cyulanr3_td4">
+						<p>成都
+<img src="http://p.igenwo.com/{{ url_for('static',filename='images/f.gif') }}">清迈</p>
+					</td>
+					<td width="350" class="cyulanr3_td5">
+						<div class="cyulanr3_td5d">
+						1、三国传奇<span>Dwedac ad9we</span><br>
+						2、三国传奇<span>Dwedac ad9we</span>
+						</div>
+					</td>
+					<td class="cyulanr3_td6">
+						<p>
+						上海松江新桥明中路地址测试随便写<span>Shanghai songjiang xinqiao 8 hao</span>
+						</p>
+					</td>
+				</tr>
+				<tr valign="top">
+					<td class="cyulanr3_td1"><font>D2</font></td>
+					<td></td>
+					<td class="cyulanr3_td3">
+						<p>成都<span>ChengDu</span></p>
+						<p>清迈<span>QingMai</span></p>
+					</td>
+					<td class="cyulanr3_td4">
+						<p>成都
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/f.gif') }}">清迈</p>
+					</td>
+					<td class="cyulanr3_td5">
+						<div class="cyulanr3_td5d">
+						1、三国传奇<span>Dwedac ad9we</span>
+						</div>
+					</td>
+					<td class="cyulanr3_td6">
+						<p>
+						地址测试随便写<span>Shanghai</span>
+						</p>
+					</td>
+				</tr>
+				<tr valign="top">
+					<td class="cyulanr3_td1"><font>D3</font></td>
+					<td></td>
+					<td class="cyulanr3_td3">
+						<p>成都<span>ChengDu</span></p>
+						<p>清迈<span>QingMai</span></p>
+					</td>
+					<td class="cyulanr3_td4">
+						<p>成都
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/f.gif') }}">清迈</p>
+					</td>
+					<td class="cyulanr3_td5">
+						<div class="cyulanr3_td5d">
+						1、三国传奇<span>Dwedac ad9we</span><br>
+						1、三国传奇<span>Dwedac ad9we</span>
+						</div>
+					</td>
+					<td class="cyulanr3_td6">
+						<p>
+						地址测试随便写<span>Shanghai</span>
+						</p>
+					</td>
+				</tr>
+				<tr valign="top">
+					<td class="cyulanr3_td1"><font>D4</font></td>
+					<td></td>
+					<td class="cyulanr3_td3">
+						<p>成都<span>ChengDu</span></p>
+						<p>清迈<span>QingMai</span></p>
+					</td>
+					<td class="cyulanr3_td4">
+						<p>成都
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/f.gif') }}">清迈</p>
+					</td>
+					<td class="cyulanr3_td5">
+						<div class="cyulanr3_td5d">
+						1、三国传奇<span>Dwedac ad9we</span>
+						</div>
+					</td>
+					<td class="cyulanr3_td6">
+						<p>
+						地址测试随便写<span>Shanghai</span>
+						</p>
+					</td>
+				</tr>
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+    //初始化主菜单
+    function sw_nav(obj,tag) {
+        var DisSub = document.getElementById("DisSub_"+obj);
+        var HandleLI= document.getElementById("HandleLI_"+obj);
+        if(tag==1) {
+            DisSub.style.display = "block";
+        } else {
+            DisSub.style.display = "none";
+        }
+    }
+</script>
+</body>
+</html>

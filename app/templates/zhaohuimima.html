@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>找回密码</title>
+<link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="icon" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename="images/style.css") }}" />
+<script type="text/javascript" src="{{ url_for('static', filename="images/jquery.min.js") }}"></script>
+<script type="text/javascript" src="../static/js/myjs.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	// 检测邮箱输入是否正确
+	$("input#email").blur(function(event) {
+		var email=$(this).val();
+		if(!isEmail(email)){
+		// 显示错误信息
+		$("div.errmessage").text("邮箱账号输入不正确！");
+		}
+	});
+
+	// 更新验证码功能
+    $("#fresh").click(function(){
+        $("#validationimg").removeAttr("src");
+        $("#validationimg").attr("src", "/auth/code/" + Math.random());
+    });
+});
+</script>
+</head>
+<body>
+<div class="cheader">
+	<div class="cmain">
+		<div class="cheaderz"><a href="/order">
+<img src="http://p.igenwo.com/{{ url_for('static', filename="images/logo.gif") }}"></a></div>
+	</div>
+</div>
+<div class="height20"></div>
+<div class="cmain">
+	<div class="clogin">
+		<div class="clogint">找回密码</div>
+        <form action="{{ url_for('auth.findpassword') }}" method="post">
+		<div class="cloginc">
+			<div class="clogincd">
+				<span>
+<img src="http://p.igenwo.com/{{ url_for('static', filename='images/ic2.png') }}"></span><em><input type="email" id="email" required name="email" placeholder="请输入邮箱账号"></em>
+			</div>
+			<div class="clogincd5">
+				<table width="100%" border="0" cellpadding="0" cellpadding="0">
+				<tr valign="middle">
+				<td width="220"><div class="clogincd51"><input type="number" id="validation" name="validation" required placeholder="请输入验证码"></div></td>
+				<td width="10"></td>
+				<td width="100"><img id='validationimg' src="/auth/code/0"></td>
+				<td width="10"></td>
+				<td width=""><a id="fresh" href="#">换一张</a></td>
+				</tr>
+				</table>
+			</div>
+			<div class="clogincd3"><button type="submit">发送邮件</button></div>
+		</div>
+        </form>
+        <div class="errmessage">{{ msg }}</div>
+	</div>
+</div>
+
+</body>
+</html>

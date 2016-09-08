@@ -1,0 +1,789 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "跟我去旅行－供应商后端API",
+        "description": "** RESTful风格的api，有问题直接告诉我！**\n部署到了测试服务器后，测试按钮可以直接测试\n目前没有认证机制，任何人都可以调用接口，认证机制之后添加\n目前还缺少供应商反回的旅行计划接口及碎片详情接口\n"
+    },
+    "host": "121.40.30.193",
+    "basePath": "/api_v1",
+    "tags": [
+        {
+            "name": "order",
+            "description": "玩咖定制路线订单相关api"
+        }
+    ],
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/order": {
+            "get": {
+                "tags": [
+                    "order"
+                ],
+                "description": "返回订单列表－目前没有分页及排序",
+                "parameters": [
+                    {
+                        "name": "wk_id",
+                        "in": "query",
+                        "required": true,
+                        "type": "string",
+                        "description": "玩咖id"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": true,
+                        "type": "string",
+                        "description": "状态:  0 '待补充', 1'匹配中', 2'待选择', 3'待发布', 4'出行中',5 '已完成' 6 '己取消'\n"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "请求成功",
+                        "schema": {
+                            "$ref": "#/definitions/Order_list"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "order"
+                ],
+                "description": "创建玩咖的定制路线订单，其余数据通过PUT方法提交",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Order_post"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建成功, 返回订单id",
+                        "schema": {
+                            "$ref": "#/definitions/Order_id"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误，返回错误代码及错误原因",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "order"
+                ],
+                "description": "下面的字段大部分是int型的数据,目的是方便之后匹配系统工作,点开可以查看详情，字段不是必填的。",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/Order_info"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建成功, 返回订单id",
+                        "schema": {
+                            "$ref": "#/definitions/Order_id"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/{orderId}": {
+            "get": {
+                "tags": [
+                    "order"
+                ],
+                "description": "用于获取订单详细信息",
+                "parameters": [
+                    {
+                        "name": "orderId",
+                        "in": "path",
+                        "type": "string",
+                        "description": "订单id",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询成功",
+                        "schema": {
+                            "$ref": "#/definitions/Order_info_all"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "order"
+                ],
+                "description": "用于更新订单状态",
+                "parameters": [
+                    {
+                        "name": "orderId",
+                        "in": "path",
+                        "type": "string",
+                        "description": "订单id",
+                        "required": true
+                    },
+                    {
+                        "name": "it_id",
+                        "in": "query",
+                        "type": "string",
+                        "description": "行程id把订单状态设置为3'待发布' 的时候必填"
+                    },
+                    {
+                        "name": "status",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Order_status"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "查询成功"
+                    }
+                }
+            }
+        },
+        "/itinerary/{itId}": {
+            "get": {
+                "tags": [
+                    "itinerary"
+                ],
+                "description": "行程信息",
+                "parameters": [
+                    {
+                        "name": "itId",
+                        "in": "path",
+                        "type": "string",
+                        "description": "行程id",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回行程数据",
+                        "schema": {
+                            "$ref": "#/definitions/Itinerary"
+                        }
+                    }
+                }
+            }
+        },
+        "/pieces": {
+            "post": {
+                "tags": [
+                    "piece"
+                ],
+                "description": "批量获取碎片信息",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "description": "会按照发送过来的分组返回数据, ***如果传入2个相同的id只会返回一条数据***",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Pieces"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回行程数据",
+                        "schema": {
+                            "$ref": "#/definitions/Itinerarys"
+                        }
+                    }
+                }
+            }
+        },
+        "/supplier/{supId}": {
+            "get": {
+                "tags": [
+                    "supplier"
+                ],
+                "description": "供应商信息",
+                "parameters": [
+                    {
+                        "name": "supId",
+                        "in": "path",
+                        "type": "string",
+                        "description": "供应商id",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回供应商数据",
+                        "schema": {
+                            "$ref": "#/definitions/Supplier"
+                        }
+                    }
+                }
+            }
+        },
+        "/piece/{pieceId}": {
+            "get": {
+                "tags": [
+                    "piece"
+                ],
+                "description": "碎片信息",
+                "parameters": [
+                    {
+                        "name": "pieceId",
+                        "in": "path",
+                        "type": "string",
+                        "description": "碎片id",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回供应商数据",
+                        "schema": {
+                            "$ref": "#/definitions/Piece"
+                        }
+                    }
+                }
+            }
+        },
+        "/country": {
+            "get": {
+                "tags": [
+                    "values"
+                ],
+                "description": "国家列表",
+                "responses": {
+                    "200": {
+                        "description": "返回国家列表",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Country"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/city": {
+            "get": {
+                "tags": [
+                    "values"
+                ],
+                "description": "获取城市列表， 有两种使用方式，第一种是传国家id，获取整个国家的城市列表，\n第二种是传中文或者英文名的关键字(用like参数), 获取关键字相符的城市。两个参数至少传其中一个。\n",
+                "parameters": [
+                    {
+                        "name": "countryid",
+                        "in": "query",
+                        "type": "string",
+                        "description": "碎片id",
+                        "required": false
+                    },
+                    {
+                        "name": "like",
+                        "in": "query",
+                        "type": "string",
+                        "description": "碎片id",
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回城市列表",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/City"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "values"
+                ],
+                "description": "用id列表换取详细信息",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回城市列表",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/City"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cityid": {
+            "post": {
+                "tags": [
+                    "values"
+                ],
+                "description": "用中文名换取城市id",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "description": "城市中文名列表",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "description": "城市中文名",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回城市id列表",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "description": "城市id",
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "City": {
+            "type": "object",
+            "properties": {
+                "name_cn": {
+                    "description": "城市中文名称",
+                    "type": "string"
+                },
+                "name_en": {
+                    "description": "城市英文名称",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "城市id",
+                    "type": "integer"
+                },
+                "countryid": {
+                    "description": "对应的国家id",
+                    "type": "integer"
+                }
+            }
+        },
+        "Country": {
+            "type": "object",
+            "properties": {
+                "name_cn": {
+                    "description": "国家中文名称",
+                    "type": "string"
+                },
+                "name_en": {
+                    "description": "国家英文名称",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "国家id",
+                    "type": "integer"
+                }
+            }
+        },
+        "Piece": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "碎片id",
+                    "type": "integer"
+                },
+                "sup_id": {
+                    "description": "供应商id",
+                    "type": "integer"
+                },
+                "name_cn": {
+                    "description": "中文名",
+                    "type": "string"
+                },
+                "name_en": {
+                    "description": "英文名",
+                    "type": "string"
+                },
+                "price": {
+                    "description": "价格",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "cover": {
+                    "description": "封面",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "类型 0,'不限'1, '景点'2, '酒店'3, '活动'4, '餐馆'5, '购物']",
+                    "type": "integer"
+                }
+            }
+        },
+        "Supplier": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "供应商id",
+                    "type": "integer"
+                },
+                "company": {
+                    "description": "公司名称",
+                    "type": "string"
+                },
+                "introduce": {
+                    "description": "简介",
+                    "type": "string"
+                },
+                "theme": {
+                    "description": "主题",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "Order": {
+            "type": "object",
+            "properties": {
+                "wk_id": {
+                    "description": "玩咖id",
+                    "type": "integer"
+                },
+                "wk_name": {
+                    "description": "玩咖姓名",
+                    "type": "string"
+                },
+                "wk_port": {
+                    "description": "玩咖头像url",
+                    "type": "string"
+                },
+                "begin_date": {
+                    "description": "出发时间",
+                    "type": "string",
+                    "format": "date"
+                },
+                "end_date": {
+                    "description": "结束时间",
+                    "type": "string",
+                    "format": "date"
+                },
+                "people_num": {
+                    "description": "预计人数",
+                    "type": "integer"
+                },
+                "is_determined": {
+                    "description": "能否确定出行时间",
+                    "type": "boolean"
+                },
+                "city_id": {
+                    "description": "城市id",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CountryAndCity"
+                    }
+                },
+                "departure": {
+                    "description": "出发城市",
+                    "type": "string"
+                },
+                "recity": {
+                    "description": "返回城市",
+                    "type": "string"
+                },
+                "topic": {
+                    "description": "主题<br>0, '度假旅行'<br> 1, '海岛旅行'<br> 2, '游学旅行'<br> 3, '邮轮旅行'<br> 4, '火车旅行'<br> 5, '公务机旅行'<br> 6, '自驾旅行'<br> 7, '标杆企业参访'<br> 8, '团队建设和奖励旅行'<br> 9, '财富投资旅行'<br> 10, '世界节日旅行'<br> 11, '自然风光旅行'<br> 12, '酒店体验旅行'<br> 13, '米其林旅行'<br> 14, '亲子旅行'<br> 15, '宗教修心旅行'<br> 16, '蜜月婚拍旅行'<br> 17, '宠物同行旅'<br> 18, '粉丝追星旅行'<br> 19, '养老养生旅行'<br> 20, '彩虹旅行'<br> 21, '时尚奢华旅行'<br> 22, '医疗健康旅行'<br> 23, '艺术文化旅行'<br> 24, '公益慈善旅行'<br> 25, '体育探险旅行'",
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 3
+                    }
+                }
+            }
+        },
+        "CountryAndCity": {
+            "type": "object",
+            "properties": {
+                "country": {
+                    "description": "国家id",
+                    "type": "integer"
+                },
+                "city": {
+                    "description": "城市id",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "Order_info": {
+            "type": "object",
+            "properties": {
+                "order_id": {
+                    "description": "订单id，订单创建成功的时候，会返回此id，必填",
+                    "type": "integer"
+                },
+                "favor_stay": {
+                    "description": "0 经济型, 1 普通型, 2 奢华型",
+                    "type": "integer"
+                },
+                "favor_tran": {
+                    "description": "偏好的旅行方式：<br>0, '飞机'<br>1, '火车'<br>2, '大巴'<br> 3, '自驾'<br>",
+                    "type": "integer"
+                },
+                "favor_airplane": {
+                    "description": "偏好的飞机仓位 <br> 0, '经济舱'<br>1, '公务舱'<br>2, '头等舱'<br>",
+                    "type": "integer"
+                },
+                "favor_hotel": {
+                    "description": "偏好的酒店类型 <br> 0, '国际连锁酒店'<br>1, 'Airbnb(公寓/别墅'<br>2, '精品酒店（当地特色'<br>3, '度假村'<br>",
+                    "type": "integer"
+                },
+                "favor_hotel_brand": {
+                    "description": "偏好的酒店品牌 待完善。",
+                    "type": "integer"
+                },
+                "favor_food": {
+                    "description": "偏好的食物类型 <br>0, '当地特色美食'<br>1, '经济快餐'<br>2, '米其林餐厅'<br>3, '餐饮自理'<br>4, '中餐'<br>5, '其他'<br>",
+                    "type": "integer"
+                },
+                "favor_visa": {
+                    "description": "偏好的签证办理方式 <br>0, '已有签证'<br>1, '自己办理'<br>2, '协助办理'<br>",
+                    "type": "integer"
+                },
+                "favor_budget": {
+                    "description": "预算范围 <br>0, '5000-15000（经济型）'<br>1, '15000-25000（品质型）'<br>2, '25000-35000（高价型）'<br>3, '35000以上（奢华型）'<br>",
+                    "type": "integer"
+                },
+                "favor_why": {
+                    "description": "0 圆满, 1 历险, 2 思考人生, 3 天伦之乐 , 4 商务考察, 5 游学",
+                    "type": "integer"
+                },
+                "is_shopping": {
+                    "description": "能否安排购物 0 否 1 是",
+                    "type": "integer"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "itinerary_id": {
+                    "description": "如果订单状态为1(待确认）才会返回这条数据",
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 3
+                    }
+                }
+            }
+        },
+        "Order_post": {
+            "type": "object",
+            "properties": {
+                "post_id": {
+                    "type": "string"
+                },
+                "data": {
+                    "$ref": "#/definitions/Order"
+                }
+            }
+        },
+        "Order_id": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "订单id",
+                    "type": "integer"
+                }
+            }
+        },
+        "Order_status": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "description": "'状态<br>0'待补充', <br>1'匹配中',<br> 2'待选择', <br>3'待发布', <br>4'出行中',<br>5'已完成',<br> 6 '己取消'\n",
+                    "type": "integer"
+                }
+            }
+        },
+        "Order_list": {
+            "type": "array",
+            "description": "订单列表",
+            "items": {
+                "$ref": "#/definitions/Order_list_model"
+            }
+        },
+        "Order_list_model": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Order_id"
+                },
+                {
+                    "$ref": "#/definitions/Order_status"
+                },
+                {
+                    "$ref": "#/definitions/Order"
+                }
+            ]
+        },
+        "Order_info_all": {
+            "description": "所有订单信息",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Order_id"
+                },
+                {
+                    "$ref": "#/definitions/Order_status"
+                },
+                {
+                    "$ref": "#/definitions/Order"
+                },
+                {
+                    "$ref": "#/definitions/Order_info"
+                }
+            ]
+        },
+        "Itinerary": {
+            "description": "行程信息",
+            "properties": {
+                "id": {
+                    "description": "行程id",
+                    "type": "integer"
+                },
+                "sup_id": {
+                    "description": "供应商id",
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "行程标题",
+                    "type": "string"
+                },
+                "coverimg": {
+                    "description": "封面图片",
+                    "type": "string"
+                },
+                "pieces": {
+                    "description": "碎片信息， 以':'分割天，以','分割碎片",
+                    "type": "string"
+                },
+                "price": {
+                    "description": "参考价格",
+                    "type": "string"
+                },
+                "start_date": {
+                    "description": "出发时间",
+                    "type": "string",
+                    "format": "date"
+                },
+                "end_date": {
+                    "description": "结束时间",
+                    "type": "string",
+                    "format": "date"
+                },
+                "lights": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Light"
+                    }
+                }
+            }
+        },
+        "Itinerarys": {
+            "description": "行程信息",
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Itinerary"
+                }
+            }
+        },
+        "Light": {
+            "description": "多条亮点数据",
+            "properties": {
+                "light_title": {
+                    "description": "亮点标题",
+                    "type": "string"
+                },
+                "light_des": {
+                    "description": "亮点描述",
+                    "type": "string"
+                },
+                "light_img": {
+                    "description": "亮点图片",
+                    "type": "string"
+                }
+            }
+        },
+        "Pieces": {
+            "type": "array",
+            "description": "碎片id列表",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "integer"
+                }
+            }
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "error_code": {
+                    "type": "integer"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

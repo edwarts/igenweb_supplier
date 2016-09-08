@@ -1,0 +1,11 @@
+重置密码，点击这里{{ url_for('auth.changePassword', token=token, _external=True) }}
+
+或者你可以复制此链接到浏览器:
+
+{{ url_for('auth.changePassword', token=token, _external=True) }}
+
+
+
+跟我去旅行团队
+
+

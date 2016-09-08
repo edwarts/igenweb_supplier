@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+{% block title %}商家主页－编辑{% endblock %}
+{% block content %}
+<div class="cdingdgy">
+	<div class="cdingdgy1">
+		<div class="cshangjbj">
+			<div class="cshangjbj1">
+				<span>商家基本信息</span><a href="{{ url_for('auth.editindex') }}">编辑</a>
+			</div>
+			<div class="cshangjbj2">
+				<table width="100%" border="0" cellpadding="0" cellspacing="0">
+					<tr valign="top">
+						<td width="100">商家名称</td>
+						<td><span>{{ user.company }}
+								<img src="{{ url_for('static', filename='images/v.gif') }}"></span></td>
+					</tr>
+					<tr valign="top">
+						<td width="100">商家执照</td>
+						<td><div class="license">
+								<img src="{{ url_for('static', filename='upload/licence/'+user.licence) }}"></div></td>
+					</tr>
+					<tr valign="top">
+						<td width="100">所在地</td>
+						<td>{{ user.location }}</td>
+					</tr>
+					<tr valign="top">
+						<td width="100">服务地区</td>
+						<td>{{ user.service }}</td>
+					</tr>
+					<tr valign="top">
+						<td width="100">出行主题</td>
+						<td>{% for top in topics %}{{  top  }} {% endfor %}</td>
+					</tr>
+					<tr valign="top">
+						<td width="100">商家简介</td>
+						<td>{{ user.introduce }}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

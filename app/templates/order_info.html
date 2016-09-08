@@ -1,0 +1,189 @@
+{% extends 'layout.html' %}
+{% block title %} 订单详情 {% endblock %}
+{% block content %}
+<div class="cdingdgy">
+  <div class="cdingdgy2">
+    <div class="cdingdgy21">
+      <div class="cdingdgy211">
+        <div class="cdingdgy211z">
+          <h4>订单状态 {{ order.status_cn }}</h4>
+          <h3>提交时间：{{ order.create_time  }}</h3>
+        </div>
+      </div>
+      <div class="cdingdgy212">
+        <div class="cdingdgy212c">
+          <h2><img src="/static/images/tx.jpg"></h2>
+          <h3>{{ order.wk_name }}<img src="/static/images/nv.png"></h3>
+        </div>
+      </div>
+      <div class="cdingdgy213">
+				{% if False %}
+				<div class="cdingdgy213z">
+					<div class="cdingdgy213z_top">
+            <script id='self-msg' type="text/x-custom-template">
+						<div class="cdingdgy213zd1">
+							<div class="cdingdgy213zd1z">
+								<img src="http://p.igenwo.com/{{ url_for('static', filename='images/tx.jpg') }}"></div>
+							<div class="cdingdgy213zd1y">
+                <h3><span>${name}</span><em>${time}</em></h3>
+								<div class="cdingdgy213zd1ydc">
+                  <p>${message}</p>
+									<span></span>
+								</div>
+							</div>
+						</div>
+            </script>
+            <script id='other-msg' type="text/x-custom-template">
+						<div class="cdingdgy213zd2">
+							<div class="cdingdgy213zd1z">
+								<img src="http://p.igenwo.com/{{ url_for('static', filename='images/tx.jpg') }}"></div>
+							<div class="cdingdgy213zd1y">
+                <h3><em>${time}</em><span>${name} 
+										<img src="http://p.igenwo.com/{{ url_for('static', filename='images/v2.gif') }}"></span></h3>
+								<div class="cdingdgy213zd1ydc">
+                  <p>${message}</p>
+									<span></span>
+								</div>
+							</div>
+						</div>
+            </script>
+					</div>
+					<div class="cdingdgy213z_bot">
+						<div class="cdingdgy213z_botz">
+							<textarea id='my-text'></textarea>
+						</div>
+						<div class="cdingdgy213z_boty">发送</div>
+					</div>
+				</div>
+				<div class="cdingdgy213y">
+				{% endif %}
+        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+          <tr valign="top">
+            <td width="200"><span>出发城市</span></td>
+            <td width="440">{{ order.departure }}</td>
+            <td width="180"><span>返回城市</span></td>
+            <td>{{ order.recity }}</td>
+          </tr>
+          <tr valign="top">
+            <td><span>出发日期</span></td>
+            <td>{{ order.begin_date }}</td>
+            <td><span>返回日期</span></td>
+            <td>{{ order.end_date }}</td>
+          </tr>
+          <tr valign="top">
+            <td><span>计划目的地</span></td>
+            <td>{{ order.city_name }}</td>
+            <td><span>招募人数</span></td>
+            <td>{{ order.people_num }}</td>
+          </tr>
+          <tr valign="top">
+            <td><span>出行时间是否确定</span></td>
+            <td>{{ order.is_determined }}</td>
+            <td><span>出行天数</span></td>
+            <td>{{ order.days_num }}</td>
+          </tr>
+          <tr valign="top">
+            <td><span>出行主题</span></td>
+            <td colspan="3">{% for x in order.topic_cn %}{{ x }}&nbsp{% endfor %}</td>
+          </tr>
+          <tr valign="top">
+            <td><span>餐饮类型</span></td>
+            <td colspan="3">{{ order.info.food_cn }}</td>
+          </tr>
+          <tr valign="top">
+            <td><span>酒店偏好</span></td>
+            <td colspan="3">{{ order.info.hotel_cn }}</td>
+          </tr>
+          <tr valign="top">
+            <td><span>酒店品牌偏好</span></td>
+            <td colspan="3">{{ order.info.hotel_brand_cn }}</td>
+          </tr>
+          <tr valign="top">
+            <td><span>预算</span></td>
+            <td colspan="3">{{ order.info.budget_cn }}</td>
+          </tr>
+          <tr valign="top">
+            <td><span>备注</span></td>
+            <td colspan="3">{{ order.info.remark }}</td>
+          </tr>
+        </table>
+				{% if False %}
+				</div>
+				{% endif %}
+      </div>
+    </div>
+		{% if status == 0 %}
+    <div class="cdingdgy22">
+			<li class="cdingdgy22li1"><a href="/order/{{ order.id }}?action=accept"><button>接单</button></a></li>
+			<li class="cdingdgy22li2"><a href="/order/{{ order.id }}?action=refuse"><button>拒绝</button></a></li>
+    </div>
+		{% endif %}
+		{% if status == 2%}
+    <div class="cdingdgy22" id='it_id'>
+			<select>
+				<option> 选择一条路线</option>
+				<option> 新建路线</option>
+				{% for it in itinerary %}
+				<option value="{{ it.id }}">{{ it.title }} </option>
+				{% endfor %}
+</select>
+				<li class="cdingdgy22li2"><a href="#" onclick="submit_it()"><button>提交</button></a></li>
+				<li class="cdingdgy22li2"><a href="/itinerary"><button>新建路线</button></a></li>
+    </div>
+		{% endif %}
+{% endblock %}
+{% block js %}
+<script src="/static/js/realtime.browser.min.js"></script>
+<script>
+$(function() {
+	var Realtime = AV.Realtime;
+	var realtime = new Realtime({
+		appId: 'gClmThrDtHGDB30CKzvNENrW-gzGzoHsz',
+		region: 'cn', // 美国节点为 "us"
+	});
+  // 接收数据
+	realtime.createIMClient('aaa').then(function(jerry) {
+		  jerry.on('message', function(message, conversation) {
+        $('#other-msg').tmpl(
+            {'name': message.from,
+             'time': message.timestamp,
+             'message': message.content._lctext}
+             ).appendTo('.cdingdgy213z_top');
+      });
+	}).catch(console.error);
+  // 发送数据
+	$('.cdingdgy213z_boty').click(function() {
+		// Tom 用自己的名字作为 clientId，获取 IMClient 对象实例
+		realtime.createIMClient('sup_1').then(function(tom) {
+			  // 创建与Jerry之间的对话
+			  return tom.createConversation({
+					    members: ['aaa'],
+							    name: 'test',
+									  });
+		}).then(function(conversation) {
+			  // 发送消息
+			  return conversation.send(new AV.TextMessage($('#my-text').val()));
+		}).then(function(message) {
+          n = new Date()
+          $('#self-msg').tmpl(
+              {'name': 'sup_1',
+               'message': $('#my-text').val(),
+               'time': n.toISOString()}
+              ).appendTo('.cdingdgy213z_top');
+          $('#my-text').val('');
+		}).catch(console.error);
+	});
+});
+function submit_it() {
+	$.ajax({
+		url: "/order/{{ order.id }}",
+		method: 'PUT',
+		dataType: 'json',
+		data: {'it_id': $('#it_id option:selected').val()},
+		success: function () {
+			alert('提交成功');
+		}
+	});
+}
+</script>
+{% endblock %}

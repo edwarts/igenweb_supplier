@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>{% block title %}layout{% endblock %}</title>
+<link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="icon" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename="images/style.css") }}" />
+{% block css %} {% endblock %}
+</head>
+<body>
+<div class="cheader">
+	<div class="cmain clearfix">
+		<div class="cheaderz">
+            <a href="/order">
+                <img src="http://p.igenwo.com/{{ url_for('static', filename="images/logo.gif") }}">
+            </a>
+        </div>
+        <div class="cheadert">
+            <div class="y loginout_tool"><a href="/auth/logout" id="loginout_btn" style="text-decoration:underline;color:#3692ed">退出</a></div>
+            <div class="y login_name" style="margin-right:5px;">{{ username }}</div>
+        </div>
+	</div>
+</div>
+<div class="height20"></div>
+<div class="cmain">
+	<div class="cdingdg">
+		<div class="cdingdgz">
+			<div class="cdingdgzli">
+				<li id='left-order'><a href="/order">订单管理</a></li>
+				<li id='left-itinerary'><a href="/itinerary">路线管理</a></li>
+				<li id='left-piece'><a href="{{ url_for('auth.piece') }}">碎片管理</a></li>
+				<li id='left-mine'><a href="{{ url_for('auth.index') }}">我的主页</a></li>
+			</div>
+		</div>
+    {% block content %}
+    {% endblock %}   
+	</div>
+</div>
+<textarea id="tempArea" style="display:none;">
+    <tr><td>$status$</td><td>$destination$</td><td>$numbers$</td><td>$destinationdate$</td><td>王小米</td><td><a href="/auth/checkorder/$id$">查看</a></td><td><a href="#">编辑</a></td></tr>
+</textarea>
+</body>
+<script type="text/javascript" src="{{ url_for('static', filename="images/jquery.min.js") }}"></script>
+<script type = text/javascript src="{{ url_for('static', filename="js/jquery.tmpl.min.js") }}"></script>
+<script type="text/javascript" src="/static/js/myjs.js"></script>
+<script>
+$(function() {
+	if(window.location.pathname.indexOf('order') > 0) {
+		$("#left-order").addClass('a');
+	} else if(window.location.pathname.indexOf('itinerary') > 0){
+		$("#left-itinerary").addClass('a');
+	} else if(window.location.pathname.indexOf('piece') > 0){
+		$("#left-piece").addClass('a');
+	} else if(window.location.pathname.indexOf('mine') > 0){
+		$("#left-mine").addClass('a');
+	}
+});
+</script>
+{% block js %} {% endblock %}
+</html>

@@ -1,0 +1,125 @@
+{% extends 'layout.html' %}
+{% block title %}路线管理{% endblock %}
+{% block css %}
+<style>
+div.cdingdgy{
+    position: relative;
+}
+div.code_view{
+    position: absolute;
+    top:-1px;
+    right:-175px;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 3px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="cdingdgy clearfix" style="overflow:visible">
+	<div class="cdingdgy2">
+		<div class="cyulanr1">
+			<div class="cyulanr1c">
+				<div class="cyulanr1cz">
+					<div class="cyulanr1czz">
+						<img src="http://p.igenwo.com/{{ url_for('static', filename='images/tx.jpg') }}"></div>
+					<div class="cyulanr1czy">
+						<h3>{{ it.title }}</h3>
+						<p>出发日期 {{ it.start_data }}</p>
+					</div>
+				</div>
+				<div class="cyulanr1cy">
+					<img src="{{ coverimg }}"> 10</div>
+			</div>
+		</div>
+		<div class="cyulanr2">
+			<div class="cyulanr2d">
+				<div class="cyulanr2dz">
+					<li class="a"><a href="#">标准模式</a></li>
+					<!-- <li><a href="#">日历预览</a></li>
+			 <li><a href="#">费用</a></li> -->
+				</div>
+				<div class="cyulanr2dy">
+					<div class="cyulanr2dyz">
+						<li class="menuPopup" onMouseOver="sw_nav(1,1);" onMouseOut="sw_nav(1,0);">
+							<a id="HandleLI_1" href="javascript:;">分享到</a> 
+							<div id=DisSub_1 class="topfenxiangbox">
+								<div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
+								<script>
+window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+								</script>
+							</div> 
+						</li> 
+					</div>
+					<!--
+					<div class="cyulanr2dyy">
+						<li class="cyulanr2dyyli1"><a href="javascript:alert('暂不开放该功能')">导出行程</a></li>
+						<li class="cyulanr2dyyli2"><a href="javascript:window.history.go(-1)">继续编辑</a></li>
+					</div>
+					-->
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+function nTabs(e, Num){
+	$('.day').hide();	
+	var tmp = '#myTab'+Num+'_Content';
+	$(tmp).show();
+}
+	</script>
+	<div class="cdingdgy1">
+		<div class="cyulanbz">
+			<div class="cyulanbzz">
+				<div class="cyulanbzzz">
+					{% for piece in pieces %}
+					<ul id="myTab0">
+						<li class='active' onclick='nTabs(this, {{ loop.index }} );'>D{{ loop.index }}</li>
+					</ul>	
+					{% endfor %}
+				</div>
+				<div class="cyulanbzzy">
+					{% for piece in pieces %}
+					<div id='myTab{{ loop.index }}_Content' class='day' {% if loop.index > 1 %} style="display:None"{% endif %} >
+						<div class='cyulanbzzy1'>
+							<div class='cyulanbzzy1z'>D{{ loop.index }}</div>
+							<div class='cyulanbzzy1y'>
+								<h4>日期：{{ it.start_date.split('-')[0] }}年{{ it.start_date.split('-')[1] }}月{{ it.start_date.split('-')[2]|int + loop.index0 }}日</h4>
+								<h3>{{ piece[0].city_name.cityname_cn }} > {{ piece[-1].city_name.cityname_cn }} </h3>
+							</div>
+						</div>
+						{% for pie in piece %}
+						<div class='cyulanbzzy2'>
+							<div class="cyulanbzzy2d">
+								<div class="cluxiangl2zdzz"><img src="//p.igenwo.com/static/{{ pie.cover }}"></div>
+								<div class="cyulanbzzy2dy">
+									<h2>{{ pie.name_cn }}</h2>
+									<h3>{{ pie.description }}</h3>
+									<!-- <p><span>时长：1.5小时</span><em><i>${price}</i>元起</em></p> -->
+								</div>
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="code_view">
+		<div class="code"></div>
+		<div class="text">扫描二维码查看移动版行程</div>
+	</div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="http://maps.google.cn/maps/api/js?key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/jquery.qrcode.min.js')}}"></script>
+<script>
+$(document).ready(function() {
+		// 生成预览二维码
+	$('div.code_view div.code').qrcode({width:150,height:150,text:"http://csyangwen.vicp.net/lx/code/mobilev1/xingchengyulan.php?id="+"{{ it.id }}"});
+</script>
+{% endblock %}

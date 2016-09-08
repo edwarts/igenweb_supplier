@@ -1,0 +1,15 @@
+drop table chatinfo;
+drop table itinerarylight;
+drop table service_city;
+drop table sup_and_order;
+drop table itinerary;
+drop table wk_favor_keys;
+drop table order_info;
+drop table wk_order;
+drop table mypiece;
+drop table mypiece_imgurl;
+drop table mypiecetags;
+drop table expense;
+drop table match_table;
+drop table userinfo;
+alter table frag add column sup_id int default NULL;

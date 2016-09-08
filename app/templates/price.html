@@ -1,0 +1,174 @@
+{% extends 'layout.html' %}
+{% block title %}价格及注意事项 {% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='images/jquery-ui.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='images/jquery.datetimepicker.css') }}"/>
+{% endblock %}
+	{% block content %}
+		<div class="cdingdgy">
+			<div class="cdingdgy1">
+				<div class="chuangjlx">
+					<div class="chuangjlxz">
+						{% if it.status == 1 %}
+						<li><a href="/itinerary/modify/{{ it.id }}/base">基础信息</a></li>
+						<li><a href="/itinerary/modify/{{ it.id }}/it">行程信息</a></li>
+						<li class="a"><a href="/itinerary/modify/{{ it.id }}/price">价格信息及注意事项</a></li>
+						{% else %}
+						<li class="a"><a href="#">行程信息</a></li>
+						{% endif %}
+					</div>
+					<div class="chuangjlxy2">
+						<input type="hidden" id="itineraryid" value="{{ id }}" />
+						<a id="submit" href="#">提交</a>
+					</div>
+				</div>
+						<div class="coverbaicd">
+							<div class="coverbaicdz">
+								<li class="active" title="费用计算"><a href="#" id="coverbaicdz_1"></a></li>
+								<li title="行程预览"><a href="/itinerary/{{ it.id }}" id="coverbaicdz_2"></a></li>
+							</div>
+							<div class="coverbaicdy">
+								<div class="coverbaicdy_1 clearfix">
+									<div class="coverbaicdy_1t">
+										<div class="feiyong_count" style="color:#333;padding-left:15px;margin-top:10px;">
+											<span style=" font-size: 14px;color: #333;"
+                        >总价：CNY</span> <input id='count'
+                 style='font-size:18px' value='{{ price.count }}' type='number'>
+											<span style=" font-size: 14px;color: #333;"
+                        >儿童价：CNY</span> <input id='child'
+                 style='font-size:18px' value='{{ price.child }}' type='number'>
+											<span style=" font-size: 14px;color: #333;"
+                        >单房差：CNY</span> <input id='soloroom'
+                 style='font-size:18px' value='{{ price.soloroom }}' type='number'>
+										</div>
+										<div class="coverbaicdy_1tz">
+											<div class="coverbaicdy_1tz1">
+												名称：<input type="text" id="ex_name" name="ex_name" placeholder="请输入名称">
+											</div>
+											<div class="coverbaicdy_1tz2">
+												<table border="0" cellpadding="0" cellspacing="0" width="100%">
+													<tr>
+														<td width="50">单价：</td>
+														<td width="130"><input type="number" id="ex_price" name="ex_price" placeholder=""></td>
+														<td width="90">
+															<span class="sleBG2">    
+																<span class="sleHid2">
+																	<select id="currency" name="currency" class="select2">
+																		<option selected="selected" value="CNY">人民币</option>
+																	</select>
+																</span>
+															</span>
+														</td>
+													</tr>
+												</table>
+											</div>
+											<div class="coverbaicdy_1tz3">
+												<table border="0" cellpadding="0" cellspacing="0" width="100%">
+													<tr>
+														<td width="50">数量：</td>
+														<td width="60">
+															<span class="sleBG3">    
+																<span class="sleHid3">
+																	<select id="ex_cnt" name="ex_cnt" class="select3">
+																		<option selected="selected" value="1">1</option>
+																		<option value="2">2</option>
+																		<option value="3">3</option>
+																		<option value="4">4</option>
+																		<option value="5">5</option>
+																		<option value="6">6</option>
+																		<option value="7">7</option>
+																		<option value="8">8</option>
+																		<option value="9">9</option>
+																		<option value="10">10</option>
+																		<option value="11">11</option>
+																		<option value="12">12</option>
+																		<option value="13">13</option>
+																		<option value="14">14</option>
+																		<option value="15">15</option>
+																		<option value="16">16</option>
+																		<option value="17">17</option>
+																		<option value="18">18</option>
+																		<option value="19">19</option>
+																		<option value="20">20</option>
+																	</select>
+																</span>
+															</span>
+														</td>
+													</tr>
+												</table>
+											</div>
+										</div>
+										<div class="coverbaicdy_1ty">
+											<span><a href="#" id="expense">+新增</a></span>
+										</div>
+									</div>
+									<div class="coverbaicdy_1c">
+										<li id="co_li_sp1_id1"><span class="co_li_sp1">名称</span><span class="co_li_sp2">单价</span><span class="co_li_sp3">数量</span><span class="co_li_sp4">总计</span></li>
+										{% for pri in price.list %}
+										<li><span class="co_li_sp1">{{ pri.name }}</span><span class="co_li_sp2">CNY {{ pri.val }}</span><span class="co_li_sp3">{{ pri.number }}
+											</span><span class="co_li_sp4">CNY <span class="rowprice">{{ pri.val * pri.number }}</span></span>
+											<span class="co_li_sp5"><a href="#" onclick="del(this)">删除</a></span></li>
+										{% endfor %}
+									</div>
+									<div class='dv-notice'>
+										<p class='p-notice'>注意事项</p>
+										<textarea class='ta-notice'>{% if notice %}{{ notice }}{% else %}请在这里填写注意事项!{% endif %}</textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+{% endblock %}
+{% block js %}
+<script src="{{ url_for('static', filename='images/jquery-ui.min.js') }}"></script>
+<script src="{{ url_for('static', filename='images/hhDrop2.js') }}"></script>
+<script src="{{ url_for('static', filename='images/huadong.js') }}"></script>
+<script src="{{ url_for('static', filename='images/jquery.datetimepicker.js') }}"></script>
+<!-- JS初始化  Edgar 2016.6.21-->
+<script>
+$(function(){
+	$('#expense').click(function() {
+		d1 = $('#ex_name').val();
+		d2 = $('#ex_price').val();
+		d3 = $('#ex_cnt').val();
+		d4 = $('#currency').val();
+		str = '<li><span class="co_li_sp1">'+ d1 + '</span><span class="co_li_sp2">CNY ' + d2 +'</span><span class="co_li_sp3">'+d3;
+		str = str +	'</span><span class="co_li_sp4">CNY <span class="rowprice">'+ parseInt(d3) * parseInt(d2) +'</span></span>'
+		str = str +	'<span class="co_li_sp5"><a href="#" onclick="del(this)">删除</a></span></li>'
+		$('.coverbaicdy_1c').append(str);
+	})
+});
+function del(e) {
+	$(e).parents('li').remove();
+}
+$('#submit').click(function() {
+  data = {'count': $('#count').val(),
+          'child': $('#child').val(),
+          'soloroom': $('#soloroom').val(),
+          'list' : []
+  };
+	for(x=1;x<($('.co_li_sp1').length);x++) {
+		da = {'name': $('.co_li_sp1').eq(x).text(),
+					'val': parseInt($('.co_li_sp2').eq(x).text().split(' ')[1]),
+					'number': parseInt($('.co_li_sp3').eq(x).text())}
+		data['list'].push(da);
+	}
+	if($('.ta-notice').val() == '请在这里填写注意事项!') {
+		alert('请填写注意事项');
+		return False;
+	}
+	$.ajax({
+		url : '/itinerary/modify/{{it.id}}/price',
+		method: "POST",
+		data: {'price':JSON.stringify(data), 'notice': $('.ta-notice').val()},
+		DataType: 'json',
+		success: function () {
+			if(confirm('保存成功,要返回列表页么?')){
+				window.location.href='/itinerary';
+			}
+		}
+	});
+});
+</script>
+{% endblock %}

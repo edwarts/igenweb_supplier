@@ -1,0 +1,196 @@
+{% extends 'layout.html' %}
+{% block title %}路线管理{% endblock %}
+{% block content %}
+<div class="cdingdgy">
+	<div class="cdingdgy1">
+		<div class="chuangjlx">
+			<div class="chuangjlxz">
+				<li {% if status == -1 %}class="a"{% endif %}><a href="/itinerary">全部</a></li>
+				<li {% if status == 0 %}class="a"{% endif %}><a href="/itinerary?status=0">编辑中</a></li>
+				<li {% if status == 1 %}class="a"{% endif %}><a href="/itinerary?status=1">已完成</a></li>
+			</div>
+		</div>
+		<div class="cluxiangl">
+			<div class="cluxiangl1">
+				<div class="cluxiangl1d">
+					<div>
+						<input type="text" placeholder="请输入关键词" class="search_text"><button class="search_btn"></button>
+					</div>
+				</div>
+					<li class='my-btn'><a href="/itinerary/create">创建路线</a></li>
+			</div>
+			<div class="cluxiangl2">
+				{% for it in itary %}
+				<div class="cluxiangl2z">
+					<div class="cluxiangl2zd">
+						<div class="cluxiangl2zdz">
+							<div class="cluxiangl2zdzz"><a href="/itinerary/{{ it.id }}"><img src="{{ it.coverimg }}"></a></div>
+							<div class="cluxiangl2zdzy">
+								<h3><span>{{ it.title }}</span><em>
+										<span class="sleBG">
+											<span class="sleHid">
+												<div>{{ it.status_cn }}</div>
+											</span>
+										</span>
+									</em></h3>
+									<p>
+									</p>
+							</div>
+						</div>
+						<div class="cluxiangl2zdy">
+							<li style="display:none;"><a href="/itinerary/{{ it.id }}" class="cpshowmap">地图预览</a></li>
+							<li><a href={% if it.status==0 %}"/itinerary/create/{{ it.id }}"{% else %}"/itinerary/modify/{{ it.id }}/base"{% endif %}>修改路线</a></li>
+							<li><a href="javascript:void(0)" onclick="deleteIt(this, {{ it.id }})" class="delete_itinerary" data-id="{{ it.id }}">删除路线</a></li>
+						</div>
+					</div>
+
+				</div>
+				{% endfor %}
+				<div class="cluxiangl2y">
+					<div class="calendar_bottom">
+						<div id="mapd1_1" style="display:none">
+							<div class="cluxiangl2ymap1"><div id="allmap" style="width:318px;height:288px;"></div></div>
+
+						</div>
+					</div>
+					<div class="cluxiangl2ytop">
+						<select id="keytype">
+							<option value='mapd1_1'>第1天</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="http://maps.google.cn/maps/api/js?key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false"></script>
+<script>
+$(document).ready(function() {
+    var keytypeStr="#keytype";
+    var keytypeObj=$(keytypeStr);
+    var currentMonth=1;
+    $(keytypeStr+" option:contains('"+currentMonth+"')").attr("selected","selected");
+    var currentMonthSelector="#"+$("option:contains('"+currentMonth+"')").val();
+    $(currentMonthSelector).show();
+    keytypeObj.change(function(){
+        $('option:selected', this).each(function(){
+			var displayIndexSelect=parseInt(this.value);
+            var itinerary = parseInt(displayIndexSelect / 10);
+            var day = displayIndexSelect % 10;
+            $.ajax({
+                url:"/auth/getmap/"+itinerary+"/"+day,
+                datatype:"json",
+                success:function(data){
+                    var data = eval(data);
+                    getmap(data[0].coordinate);
+                    $(".calendar_bottom").find(".cluxiangl2ymap2").remove();
+                    var map_html = "<div class='cluxiangl2ymap2'>"+data[0].daystr+"</div>";
+                    $(map_html).appendTo(".calendar_bottom");
+                }
+            });
+				});
+    });
+		
+    $(".cluxiangl2z").on('click', '.cpshowmap', function(){
+        var cName = this.className;
+        if(cName == "cpshowmap a") {
+            $(".cluxiangl2y").hide();
+            $(this).toggleClass("a");
+            return false;
+        }
+        $("[class*='cpshowmap a']").each(function() {
+           this.className = "cpshowmap";
+        });
+        $(".cluxiangl2y").show();
+        var id = $(this).attr("id");
+        $.ajax({
+            url:"/auth/getmap/"+id,
+            datatype:"json",
+            success:function(data){
+                var data = eval(data);
+
+                getmap(data[0].coordinate);
+                $("#keytype").children().remove();
+                for (var i=0; i<data[0].days; i++) {
+                    $("<option value='"+id+(i+1)+"'>第"+(i+1)+"天</option>").appendTo("#keytype");
+                }
+                $(".calendar_bottom").find(".cluxiangl2ymap2").remove();
+                var map_html = "<div class='cluxiangl2ymap2'>"+data[0].daystr+"</div>";
+                $(map_html).appendTo(".calendar_bottom");
+            }
+        });
+        $(this).toggleClass("a");
+    });
+});
+function deleteIt(e, it_id) {
+	$.ajax({
+		method: 'DELETE',
+		url: '/itinerary/'+it_id,
+		dataType: 'json',
+		success: function (res) {
+			if(res.success == 'success') {
+				$(e).parents('.cluxiangl2z').hide('slow');
+			}
+			else {
+				alert('网络错误');	
+			}
+		},
+
+
+	});
+}
+function getmap() {
+    var args = arguments[0];
+    var len = args.length;
+    var coordinate = new Array();
+    for (var i=0; i<len; i++) {
+        coordinate[i] = new google.maps.LatLng(args[i].lat, args[i].lng);
+    }
+    var myCenter=new google.maps.LatLng(args[0].lat,args[0].lng);
+
+    var mapProp = {
+        center:myCenter,
+        zoom:12,
+        mapTypeId:google.maps.MapTypeId.ROADMAP
+    };
+
+    var map=new google.maps.Map(document.getElementById("allmap"),mapProp);
+
+    var marker=new google.maps.Polyline({
+        path:coordinate,
+        strokeColor:"#0000FF",
+        strokeOpacity:0.8,
+        strokeWeight:2
+    });
+
+    marker.setMap(map);
+ }
+
+
+// 订单搜索 Edgar 2016.6.27
+// 返回格式同/auth/getitinerary一样
+$("div.cluxiangl1 button.search_btn").click(function(event) {
+    var search_text=$("input.search_text").val();
+    if(search_text){
+        $.post("后端搜索路线接口地址",{search_text:search_text},function(data){
+            data = eval(data);
+            $("#itinerarytmpl").tmpl(data).appendTo(".cluxiangl2z");
+            var obj = $(".cluxiangl2zd p");
+            for(var i=0; i<obj.length; i++) {
+                var ptmpl = obj[i];
+                var datainfo = data[i].position.days;
+                $("#dayinfotmpl").tmpl(datainfo).appendTo(ptmpl);
+            }
+        });
+    }
+});
+$("#suipidel").on('click', 'button', function(){
+	$(".suipidel").hide();
+});
+$("#suipidel").on('click', '.suipidel1sp img', function(){
+	$(".suipidel").hide();
+});
+</script>
+{% endblock %}
